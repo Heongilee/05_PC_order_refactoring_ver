@@ -39,8 +39,8 @@ public class LoginView extends JFrame{
 	JLabel passlb;
 	JLabel la;
 	boolean flag;
-	public JRadioButton user = new JRadioButton("user MODE");
-	public JRadioButton server = new JRadioButton("server MODE");
+	public JRadioButton user = new JRadioButton("user Mode");
+	public JRadioButton server = new JRadioButton("admin Mode");
 	ButtonGroup goup = new ButtonGroup();
 	
 	public JToolBar bar = new JToolBar();
@@ -152,6 +152,6 @@ public class LoginView extends JFrame{
 	public void addButtonActionListener(ActionListener listener) {
 		loginbt.addActionListener(listener);			//로그인 버튼
 		SignUpbtn.addActionListener(listener);			//회원가입 버튼
-		//previousBtn.addActionListener(listener);		//이전 버튼
+		// previousBtn.addActionListener(listener);		//이전 버튼
 	}
 }

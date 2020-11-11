@@ -58,7 +58,7 @@ public class PCController implements Runnable {
    public static Vector<Orders_DTO> order_list = new Vector<Orders_DTO>();
    
    // 메시지 클래스 참조 객체
-   Message m;
+   Message gson_message;
    
    // 로거 객체
    Logger logger;
@@ -102,8 +102,9 @@ public class PCController implements Runnable {
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
-            if (obj == LV.loginbt && c_dao.getInstance().get_check(LV.loginTextField.getText())) { // 로그인 버튼을 눌렀을 때
-               if (LV.server.isSelected()) { // server mode에 체크 되어있을 경우 (관리자 cMODE : 0)
+            // 로그인 버튼을 눌렀을 때 get_check를 통해서 이미 로그인 중 인지에 대한 여부를 확인한다.
+            if (obj == LV.loginbt && c_dao.getInstance().get_check(LV.loginTextField.getText())) {
+               if (LV.server.isSelected()) { // admin mode에 체크 되어있을 경우 (관리자 cMODE : 0)
                   if (cl.Mode_Check(LV.loginTextField.getText(), LV.passwordField.getText(), 0)) {
                      // ------- 로그인 성공!! -------
                      c_dao.getInstance().make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
@@ -120,8 +121,8 @@ public class PCController implements Runnable {
                   }
 
                } else if (LV.user.isSelected()) { // user mode에 체크 되어있을 경우 (사용자 cMODE : 1)
+                  // ------- 로그인 성공!! -------
                   if (cl.Mode_Check(LV.loginTextField.getText(), LV.passwordField.getText(), 1)) {
-                     // ------- 로그인 성공!! -------
                      c_dao.getInstance().make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
                      LV.bar.setVisible(true);//bar를 활성화
 
@@ -134,7 +135,7 @@ public class PCController implements Runnable {
                      GUI.la[0].setText("아이디 : " + GUI.id);
                      GUI.la[2].setText("포인트 : " + c_dao.getInstance().getCash(GUI.id));
 
-                     connectServer();
+                     connectServer(); // 로그인 성공에 따른 클라이언트 스레드 생성.
                   } else {
                      // ------- 로그인 실패... -------
                      return;
@@ -144,7 +145,7 @@ public class PCController implements Runnable {
             } else if (obj == LV.SignUpbtn) { // 회원가입 버튼을 눌렀을 경우
                LV.cardLayout.show(LV.window, "signUp");
             } else if (obj == LV.previousBtn) { // 툴바 이전 버튼을 눌렀을 경우
-            	/*	툴바 이전 버튼을 누르면 회원가입 필드들은 초기화 되어야 한다.	*/
+            /*	툴바 이전 버튼을 누르면 회원가입 필드들은 초기화 되어야 한다.	*/
                LV.signUpView.IdField.setText("");
                LV.signUpView.PassField.setText("");
                LV.signUpView.NameField.setText("");
@@ -152,7 +153,8 @@ public class PCController implements Runnable {
                LV.cardLayout.show(LV.window, "layer");
                c_dao.getInstance().make_check(LV.loginTextField.getText());	// DB체크값을 1로 바꿔 줌.
                LV.bar.setVisible(false);
-            } else {
+            } 
+            else {
 
             }
          }
@@ -266,6 +268,7 @@ public class PCController implements Runnable {
             } else if (obj == PM.btn[2]) { // 삭제
                cp.deletion();
             } else {
+
             }
          }
       });
@@ -309,6 +312,7 @@ public class PCController implements Runnable {
                cu.Load_FoodCategory(4);
             } else if (obj == GUI.sumb) { // 결제 버튼
                if(cu.Submit_Order()) {
+                  // 채팅 메시지로 사용자가 결제 완료 했다고 넣는 부분
             	   outMsg.println(gson.toJson(new Message(GUI.seat, GUI.id, "", "에서 결제하였습니다.", "orderSendServer", "")));
                }
                else {}
@@ -341,12 +345,12 @@ public class PCController implements Runnable {
          // 서버에 로그인 메시지 전달
          if (CM.loginFlag) {
            // 관리자가 로그인 했을 경우.
-            m = new Message("카운터", CM.id, "", "", "adminlogin", "");
+            gson_message = new Message("카운터", CM.id, "", "", "adminlogin", "");
          } else {
            // 사용자가 로그인 했을 경우
-            m = new Message("0", GUI.id, "", "", "login", "adminlogin");
+            gson_message = new Message("0", GUI.id, "", "", "login", "adminlogin");
          }
-         outMsg.println(gson.toJson(m));
+         outMsg.println(gson.toJson(gson_message));
 
          // 메시지 수신을 위한 스레드 생성
          thread = new Thread(this);
@@ -368,7 +372,7 @@ public class PCController implements Runnable {
             msg = inMsg.readLine();
             System.out.println(msg);
             Message m_temp = gson.fromJson(msg, Message.class);
-            if(m_temp.getType().equals("current_count") && m.getId().equals("관리자"))
+            if(m_temp.getType().equals("current_count") && gson_message.getId().equals("관리자"))
             {
                /*관리자로 로그인시에 현재 접속중인 사용자들의 좌석과 아이디를 콤보박스에 최신화 합니다.*/
                current_temp = new HashMap<String,String>();
@@ -396,7 +400,7 @@ public class PCController implements Runnable {
                orderList = gson.fromJson(m_temp.getReceiveId(), String.class);
                CM.SP.seatTextArea[(Integer.parseInt((String)m_temp.getSeat())-1)].append(orderList);
             }
-            if(m_temp.getType().equals("user_login") &&m.getId().equals("관리자"))
+            if(m_temp.getType().equals("user_login") &&gson_message.getId().equals("관리자"))
             {
                /*사용자 로그인시에 콤보박스에 방금 접속한 사용자의 좌석과 아이디를 추가합니다.*/
                String value = m_temp.getSeat()+":"+m_temp.getId();
@@ -430,11 +434,11 @@ public class PCController implements Runnable {
                   }
                }
             }
-            if(m.getSeat() == "0" && GUI.seat == "") {
+            if(gson_message.getSeat() == "0" && GUI.seat == "") {
                /*사용자가 들어갈 좌석에 사용자가 없거나 맨 처음 사용자가 들어오는 상태이면 좌석 정보를 채워 놓습니다.*/
                /*나중에 사용자 좌석 정보를 사용자 로그인시와 로그아웃시 이용하기 위함입니다.*/
                GUI.seat = m_temp.getSeat();
-               m.setSeat(m_temp.getSeat());
+               gson_message.setSeat(m_temp.getSeat());
             }
             
             if(CM.loginFlag)
@@ -457,5 +461,4 @@ public class PCController implements Runnable {
       }
       logger.info("[MultiChatUI]" + thread.getName() + " 메시지 수신 스레드 종료됨!!");
    } // run()
-
 }

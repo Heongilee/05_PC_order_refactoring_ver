@@ -17,11 +17,11 @@ import Model.Orders_DTO;
 
 public class PCServer {
    // 서버 소켓 및 클라이언트 연결 소켓
-   private ServerSocket ss = null;
-   private Socket s = null;
+   private ServerSocket serverSocket = null;
+   private Socket clientSocket = null;
    // 연결된 클라이언트 스레드를 관리하는 ArrayList
    ArrayList<ChatThread> chatThreads = new ArrayList<ChatThread>();
-   int[] seatNum = new int[12];   
+   int[] seatNum = new int[12];
 //   CusManager CM = CusManager.getInstance();
    // 로거 객체
    Logger logger;
@@ -36,12 +36,12 @@ public class PCServer {
 
       try {
          // 서버 소켓 생성
-         ss = new ServerSocket(8888);
+         serverSocket = new ServerSocket(8888);
          logger.info("PC Server start");
 
          // 무한 루프를 돌면서 클라이언트 연결을 기다린다.
          while (true) {
-            s = ss.accept();
+            clientSocket = serverSocket.accept();
             // 연결된 클라이언트에 대해 스레드 클래스 생성
             ChatThread chat = new ChatThread();
             // 클라이언트 리스트 추가
@@ -89,8 +89,8 @@ public class PCServer {
       @Override
       public void run() {
          try {
-            inMsg = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            outMsg = new PrintWriter(s.getOutputStream(), true);
+            inMsg = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            outMsg = new PrintWriter(clientSocket.getOutputStream(), true);
 
             while (status) {
                msg = inMsg.readLine();

@@ -290,7 +290,7 @@ public class Customers_DAO implements DAO_Interface{
          boolean ok;
          String sql = "UPDATE CUSTOMERS SET CUSTOMERS.CHECK = ? WHERE cNAME = ?";
          try {
-            ok = get_check(id);//check를 가져와서
+            ok = get_check(id);//check를 가져와서 true면, 이미 로그인 중이고, 아니면 로그인되어 있지 않은 상태이다.
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
             if(ok)//이미 로그인 되있는 것
@@ -311,7 +311,7 @@ public class Customers_DAO implements DAO_Interface{
          }
       }
 
-      public boolean get_check(String id) {//check값을 가져온다
+      public boolean get_check(String id) {// 이미 로그인 중인지에 대한 check값을 가져온다
          boolean ok = false;
          String sql = "SELECT CUSTOMERS.CHECK FROM CUSTOMERS WHERE CUSTOMERS.cNAME= ?";
          try {

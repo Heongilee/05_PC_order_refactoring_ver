@@ -22,7 +22,7 @@ public class AdminView extends JPanel {
 	public JButton cm_btn = new JButton("고객관리");
 	public JButton pm_btn = new JButton("상품관리");
 	private LoginPanel LP = new LoginPanel();
-	JLabel title = new JLabel("Server Mode");
+	JLabel title = new JLabel("Admin Mode");
 	private static Container c;
 	public JButton Previousbtn = new JButton("< 이전");
 	JButton LogOutbtn = new JButton("로그아웃");

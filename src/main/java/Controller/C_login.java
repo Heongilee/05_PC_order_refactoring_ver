@@ -22,7 +22,7 @@ public class C_login implements I_Login{
 	@Override
 	public boolean Mode_Check(String id, String pw, int flag) {
 		boolean RET = false;
-		if(dao.Try_Login(id, pw, flag)) { //
+		if(dao.Try_Login(id, pw, flag)) {
 			RET = true;
 			
 			switch(flag) 
