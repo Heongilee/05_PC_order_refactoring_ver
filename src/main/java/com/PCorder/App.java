@@ -8,6 +8,7 @@ import Controller.C_login;
 import Controller.PCController;
 import Model.Customers_DAO;
 import Model.PCChatData;
+import Model.ViewState;
 import View.AdminView;
 import View.CusManager;
 import View.GUIView;
@@ -29,19 +30,28 @@ public class App
 		// -> Controller\PCServer.java
 		// -> com.PCorder\App.java
 		////////////////////////////////////////////////////
+
+		LoginView loginView = LoginView.getInstance();
+		SignUpView signUpView = SignUpView.getInstance();
+		GUIView guiView = GUIView.getInstance();
+		CusManager cusManager = CusManager.getInstance();
+		ProdManager prodManager = ProdManager.getInstance();
 				
 		//컨트롤러 객체 생성
 		app = new PCController	(
-								LoginView.getInstance(), CusManager.getInstance(), 
-								ProdManager.getInstance(), GUIView.getInstance(),
-								new AdminView(), new SignUpView(),
-								new C_login(), new C_SignUp(), 
+								loginView, cusManager, 
+								prodManager, guiView,
+								new AdminView(), signUpView,
+								new C_login(), new C_SignUp(),
 								new C_ProdManager(), new C_UserView(),
 								new C_AdminView(), new PCChatData(), 
 								new PCChatData()
 								);
 		//고객 DAO객체 생성
 		dao = Customers_DAO.getInstance();
+
+		// viewState 활성화
+		ViewState.getInstance();
 		
 		app.appMain();
 	}

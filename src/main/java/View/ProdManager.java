@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 //로그인 뷰 -> 관리자 뷰 -> 상품관리 뷰 (싱글톤 패턴)
-public class ProdManager extends JFrame {
+public class ProdManager extends JPanel {
 	public static ProdManager PM = ProdManager.getInstance();
 	LoginView LV = LoginView.getInstance();
 	JLabel title = new JLabel("상품관리");
@@ -52,8 +52,8 @@ public class ProdManager extends JFrame {
 	public JButton logoutBtn = new JButton("로그아웃");
 	
 	private ProdManager() {
-		super("상품관리");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// super("상품관리");
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 
 		// 툴바 interface
@@ -95,7 +95,7 @@ public class ProdManager extends JFrame {
 		add(panel, BorderLayout.CENTER);
 		
 		setSize(900, 700);
-		setLocationRelativeTo(null);
+		// LV.setLocationRelativeTo(null);
 		// 크기 고정
         //setResizable(false);
         

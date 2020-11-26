@@ -23,6 +23,8 @@ import javax.swing.JTextField;
 
 //로그인 뷰 -> 회원가입 뷰
 public class SignUpView extends JPanel {
+	private static SignUpView SUV = null;
+
 	public LoginView LV = LoginView.getInstance();
 	public JPanel p = new JPanel();
 	public JLabel SignUpLabel = new JLabel("회원가입");
@@ -43,8 +45,15 @@ public class SignUpView extends JPanel {
 	public JButton EmailOverlapbtn = new JButton("중복확인");
 	
 	public JButton btn = new JButton("완료");
+
+	public static SignUpView getInstance() {
+		if(SUV == null) {
+			SUV = new SignUpView();
+		}
+		return SUV;
+	}
 	
-	public SignUpView() {
+	private SignUpView() {
 		setLayout(new BorderLayout());
 		add(SignUpLabel);
 		add(IdLabel);

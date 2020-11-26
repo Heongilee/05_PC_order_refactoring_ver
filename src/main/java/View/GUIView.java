@@ -38,8 +38,9 @@ import org.w3c.dom.NodeList;
 import Model.Product_DTO;
 
 //로그인 뷰 -> 사용자 뷰 (싱글톤 패턴)
-public class GUIView extends JFrame {
+public class GUIView extends JPanel {
 	public static GUIView GV;
+	LoginView LV = LoginView.getInstance();
 	boolean toggle = true;
 	JPanel np1 = new JPanel();// 위쪽 전체 패널
 	JPanel ninp = new JPanel();// 위쪽 오른쪽 라벨 패털
@@ -98,11 +99,11 @@ public class GUIView extends JFrame {
 	}
 
 	private GUIView() {
-
-		setTitle("User_View");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Container c = getContentPane();
-		c.setLayout(new BorderLayout(10, 10));
+		// setTitle("User_View");
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// Container c = getContentPane();
+		// c.setLayout(new BorderLayout(10, 10));
+		setLayout(new BorderLayout(10, 10));
 
 		// 위쪽 패널 구성
 		weather.setLayout(new BorderLayout());
@@ -182,9 +183,9 @@ public class GUIView extends JFrame {
 		mess.setForeground(Color.RED);
 		np1.add(mess);
 
-		bar.addSeparator(new Dimension(806, 20));
-		bar.add(LogOutbtn);
-		np1.add(bar, BorderLayout.NORTH); // **********bar 추가 ************//
+		// bar.addSeparator(new Dimension(806, 20));
+		// bar.add(LogOutbtn);
+		// np1.add(bar, BorderLayout.NORTH); // **********bar 추가 ************//
 
 		np1.add(ninp, BorderLayout.EAST);
 		np1.add(weather, BorderLayout.WEST);
@@ -267,14 +268,18 @@ public class GUIView extends JFrame {
 		if (toggle == true)
 			ep4.setBorder(new TitledBorder(new LineBorder(Color.BLACK)));
 
-		c.add(np1, BorderLayout.NORTH);
-		c.add(wp2, BorderLayout.WEST);
-		c.add(cp3, BorderLayout.CENTER);
-		c.add(ep4, BorderLayout.EAST);
+		// c.add(np1, BorderLayout.NORTH);
+		// c.add(wp2, BorderLayout.WEST);
+		// c.add(cp3, BorderLayout.CENTER);
+		// c.add(ep4, BorderLayout.EAST);
+		add(np1, BorderLayout.NORTH);
+		add(wp2, BorderLayout.WEST);
+		add(cp3, BorderLayout.CENTER);
+		add(ep4, BorderLayout.EAST);
 
-		setSize(900, 700);
+		// setSize(900, 700);
 		setVisible(false);
-		setLocationRelativeTo(null);
+		// LV.setLocationRelativeTo(null);
 	}
 
 	//싱글톤 객체를 반환함.

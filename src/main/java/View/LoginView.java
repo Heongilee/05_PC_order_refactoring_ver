@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -24,12 +25,18 @@ import View.SignUpView;
 
 //로그인 뷰 (싱글톤 패턴)
 public class LoginView extends JFrame{
+	// 카드레이아웃 뷰 
+	public SignUpView signUpView = SignUpView.getInstance();
+	public JLayeredPane layeredpane = new JLayeredPane();
+	public AdminView adminView = new AdminView();
+	public GUIView guiview = GUIView.getInstance();
+	public CusManager cusManager = CusManager.getInstance();
+	public ProdManager prodManager = ProdManager.getInstance();
+
 	private static LoginView LV = new LoginView();
-	public GUIView GV = GUIView.getInstance();
+	public GUIView GUI = GUIView.getInstance();
 	public CardLayout cardLayout;
 	public JPanel window;
-	public SignUpView signUpView;
-	public AdminView adminView;
 	BufferedImage img = null;
 	public JTextField loginTextField;			//아이디 필드
 	public JPasswordField passwordField;		//패스워드 필드
@@ -45,6 +52,7 @@ public class LoginView extends JFrame{
 	
 	public JToolBar bar = new JToolBar();
 	public JButton previousBtn = new JButton("< 이전");
+	public JButton logoutBtn = new JButton("로그아웃");
 	
 	public String id;
 	
@@ -56,6 +64,8 @@ public class LoginView extends JFrame{
 		// 툴바 interface
 		bar.setVisible(false);
 		bar.add(previousBtn);
+		bar.addSeparator(new Dimension(756, 20));
+		bar.add(logoutBtn);
 		add(bar, BorderLayout.NORTH);
 		
 		goup.add(server);
@@ -67,7 +77,6 @@ public class LoginView extends JFrame{
 			System.exit(0);
 		}
 
-		JLayeredPane layeredpane = new JLayeredPane();
 		layeredpane.setBounds(0, 0, 700, 600);
 		layeredpane.setLayout(null);
 
@@ -133,11 +142,12 @@ public class LoginView extends JFrame{
 		window = new JPanel();
 		cardLayout = new CardLayout();
 		window.setLayout(cardLayout);
-		adminView = new AdminView();
-		signUpView = new SignUpView();
 		window.add(layeredpane, "layer");
 		window.add(adminView, "admin");
 		window.add(signUpView, "signUp");
+		window.add(guiview, "guiView");
+		window.add(cusManager, "cusManager");
+		window.add(prodManager, "prodManager");
 		
 		add(window);
 		setLocationRelativeTo(null);
@@ -152,6 +162,7 @@ public class LoginView extends JFrame{
 	public void addButtonActionListener(ActionListener listener) {
 		loginbt.addActionListener(listener);			//로그인 버튼
 		SignUpbtn.addActionListener(listener);			//회원가입 버튼
-		// previousBtn.addActionListener(listener);		//이전 버튼
+		previousBtn.addActionListener(listener);		//이전 버튼
+		logoutBtn.addActionListener(listener);		//이전 버튼
 	}
 }

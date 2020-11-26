@@ -98,7 +98,7 @@ public class C_UserView implements I_UserView{
 		int value = Integer.parseInt(GU.order_sum_label.getText());//합계를 가져오는 것
 		int point = Integer.parseInt(GU.la[2].getText().substring(6));//해당 아이디 포인트를 가져온다
 		String id = LoginView.getInstance().loginTextField.getText();
-		if(Customers_DAO.getInstance().Cash_Check(id, value)){
+		if(Customers_DAO.getInstance().Cash_Check(id, value)) {
 			Order_Flag = true;
 			GU.mess.setText(LoginView.getInstance().loginTextField.getText() + "님, " + "결제가 되었습니다.");
 			System.out.println(point - value);

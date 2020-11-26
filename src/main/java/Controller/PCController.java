@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import Model.Customers_DAO;
 import Model.Message;
 import Model.Orders_DAO;
+import Model.ViewState;
 import Model.Orders_DTO;
 import Model.PCChatData;
 import View.AdminView;
@@ -48,11 +49,13 @@ public class PCController implements Runnable {
    private final PCChatData GUIchatData;
    
    // 참조객체 선언.
-   public static Customers_DAO c_dao;
+   public static Customers_DAO c_dao = Customers_DAO.getInstance();
    public static Orders_DAO o_dao;
+   public static ToolBar toolBar = ToolBar.getInstance();
+   public static ViewState viewState = ViewState.getInstance();
 
    //Gson 객체 초기화
-   Gson gson = new Gson();
+   public static Gson gson = new Gson();
    
    // GUIView에서 JList에서 불러온 Product_DTO객체를 가지는 Vector
    public static Vector<Orders_DTO> order_list = new Vector<Orders_DTO>();
@@ -63,11 +66,11 @@ public class PCController implements Runnable {
    // 로거 객체
    Logger logger;
    String ip = "127.0.0.1";
-   Socket socket;
-   BufferedReader inMsg;
-   PrintWriter outMsg;
+   public static Socket socket;
+   public static BufferedReader inMsg;
+   public static PrintWriter outMsg;
+   public static boolean status;
    Thread thread;
-   boolean status;
    
    HashMap<String, String> current_temp;
 
@@ -103,11 +106,11 @@ public class PCController implements Runnable {
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
             // 로그인 버튼을 눌렀을 때 get_check를 통해서 이미 로그인 중 인지에 대한 여부를 확인한다.
-            if (obj == LV.loginbt && c_dao.getInstance().get_check(LV.loginTextField.getText())) {
+            if (obj == LV.loginbt && c_dao.get_check(LV.loginTextField.getText())) {
                if (LV.server.isSelected()) { // admin mode에 체크 되어있을 경우 (관리자 cMODE : 0)
                   if (cl.Mode_Check(LV.loginTextField.getText(), LV.passwordField.getText(), 0)) {
                      // ------- 로그인 성공!! -------
-                     c_dao.getInstance().make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
+                     c_dao.make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
                      
                      /*   화면 전환   */
                      LV.cardLayout.show(LV.window, "admin");
@@ -115,6 +118,10 @@ public class PCController implements Runnable {
 
                      /* 관리자 로그인 들어갔을 경우 이벤트 처리 */
                      connectServer();
+
+                     /* 관리자 화면으로 상태 기록 */
+                     viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
+                     System.out.println(viewState.getCurrent_view_state());
                   } else {
                      // ------- 로그인 실패... -------
                      return;
@@ -123,19 +130,26 @@ public class PCController implements Runnable {
                } else if (LV.user.isSelected()) { // user mode에 체크 되어있을 경우 (사용자 cMODE : 1)
                   // ------- 로그인 성공!! -------
                   if (cl.Mode_Check(LV.loginTextField.getText(), LV.passwordField.getText(), 1)) {
-                     c_dao.getInstance().make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
-                     LV.bar.setVisible(true);//bar를 활성화
+                     c_dao.make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
+                     LV.bar.setVisible(true);//bar를 활성
 
                      /* 화면 전환 */
-                     LV.setVisible(false);
-                     LV.GV.getInstance().setVisible(true);
+                     // LV.setVisible(false);
+                     // GUI.setVisible(true);
+                     LV.cardLayout.show(LV.window, "guiView");
+                     LV.setSize(900, 700);
+                     
 
                      /* 사용자 로그인 들어갔을 경우 이벤트 처리 */
                      GUI.id = LV.loginTextField.getText();
                      GUI.la[0].setText("아이디 : " + GUI.id);
-                     GUI.la[2].setText("포인트 : " + c_dao.getInstance().getCash(GUI.id));
+                     GUI.la[2].setText("포인트 : " + c_dao.getCash(GUI.id));
 
                      connectServer(); // 로그인 성공에 따른 클라이언트 스레드 생성.
+
+                     /* 사용자 화면으로 상태 기록 */
+                     viewState.setCurrent_view_state(viewState.getviewStateList("GUIView"));
+                     System.out.println(viewState.getCurrent_view_state());
                   } else {
                      // ------- 로그인 실패... -------
                      return;
@@ -144,37 +158,49 @@ public class PCController implements Runnable {
                }
             } else if (obj == LV.SignUpbtn) { // 회원가입 버튼을 눌렀을 경우
                LV.cardLayout.show(LV.window, "signUp");
+               toolBar.setVisibleToolBar(true);
+               LV.logoutBtn.setVisible(false);
+               toolBar.clearSignupForm();
+
+               viewState.setCurrent_view_state(viewState.getviewStateList("SignUpView"));
+               System.out.println(viewState.getCurrent_view_state());
             } else if (obj == LV.previousBtn) { // 툴바 이전 버튼을 눌렀을 경우
-            /*	툴바 이전 버튼을 누르면 회원가입 필드들은 초기화 되어야 한다.	*/
-               LV.signUpView.IdField.setText("");
-               LV.signUpView.PassField.setText("");
-               LV.signUpView.NameField.setText("");
-               LV.signUpView.EmailField.setText("");
-               LV.cardLayout.show(LV.window, "layer");
-               c_dao.getInstance().make_check(LV.loginTextField.getText());	// DB체크값을 1로 바꿔 줌.
-               LV.bar.setVisible(false);
-            } 
-            else {
+               if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("SignUpView"))){
+                  toolBar.toolBarController("SignUpView");
+               }else if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("CusManager"))) {
+                  toolBar.toolBarController("CusManager");
+               }else if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("ProdManager"))) {
+
+               }else {}
+            } else if (obj == LV.logoutBtn) {
+               if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("GUIView"))){
+                  toolBar.logoutFromGUIView();
+               }
+            } else {
 
             }
          }
       });
 
       // 로그인 뷰->관리자 뷰 이벤트 처리
-      LV.adminView.addButtonActionListener(new ActionListener() { // 관리자 뷰 레이아웃
+      AV.addButtonActionListener(new ActionListener() { // 관리자 뷰 레이아웃
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
-            if (obj == LV.adminView.cm_btn) { // 관리자 뷰에서 고객관리 버튼을 눌렀을 경우
+            if (obj == AV.cm_btn) { // 관리자 뷰에서 고객관리 버튼을 눌렀을 경우
                ca.Goto_CustomerManager();
-            } else if (obj == LV.adminView.pm_btn) { // 관리자 뷰에서 상품관리 버튼을 눌렀을 경우
+               viewState.setCurrent_view_state(viewState.getviewStateList("CusManager"));
+               System.out.println(viewState.getCurrent_view_state());
+            } else if (obj == AV.pm_btn) { // 관리자 뷰에서 상품관리 버튼을 눌렀을 경우
                ca.Goto_ProductManager();
+               viewState.setCurrent_view_state(viewState.getviewStateList("ProdManager"));
+               System.out.println(viewState.getCurrent_view_state());
             } 
          }
       });
 
       // 로그인 뷰->회원가입 뷰 이벤트 처리
-      LV.signUpView.addButtonActionListener(new ActionListener() {
+      SUV.addButtonActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
             JButton btn = (JButton) e.getSource();
@@ -191,6 +217,9 @@ public class PCController implements Runnable {
                   cs.Register_Complete();
                } catch (SQLException e1) {
                   e1.printStackTrace();
+               } finally {
+                  viewState.setCurrent_view_state(viewState.getviewStateList("LoginView"));
+                  System.out.println(viewState.getCurrent_view_state());
                }
             }
 
@@ -224,16 +253,18 @@ public class PCController implements Runnable {
                      }
                   }
                }
-            } else if (obj == CM.previousBtn) { // 고객관리 뷰에서 이전 버튼을 눌렀을 경우
+            } else if (obj == LV.previousBtn) { // 고객관리 뷰에서 이전 버튼을 눌렀을 경우
+               CM.setVisible(false);
+               LV.setVisible(true);
+               viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
+               System.out.println(viewState.getCurrent_view_state());
+            } else if (obj == LV.logoutBtn) { // 고객관리 뷰에서 로그아웃 버튼을 눌렀을 경우
+            	outMsg.println(gson.toJson(new Message(GUI.seat, GUI.id, "", "", "adminlogout", "")));
+               CM.chatContent.setText("");
+               c_dao.getInstance().make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
                CM.setVisible(false);
                LV.getInstance().setVisible(true);
-            } else if (obj == CM.logoutBtn) { // 고객관리 뷰에서 로그아웃 버튼을 눌렀을 경우
-            	outMsg.println(gson.toJson(new Message(GUI.seat, GUI.id, "", "", "adminlogout", "")));
-				CM.chatContent.setText("");
-				c_dao.getInstance().make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
-				CM.setVisible(false);
-				LV.getInstance().setVisible(true);
-				LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
+               LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
                try {
                    outMsg.close();
                    inMsg.close();
@@ -253,9 +284,11 @@ public class PCController implements Runnable {
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
-            if (obj == PM.previousBtn) { // 상품관리 뷰에서 이전 버튼을 눌렀을 경우
+            if (obj == LV.previousBtn) { // 상품관리 뷰에서 이전 버튼을 눌렀을 경우
                PM.setVisible(false);
-               LV.getInstance().setVisible(true);
+               LV.setVisible(true);
+               viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
+               System.out.println(viewState.getCurrent_view_state());
             } else if (obj == PM.logoutBtn) { // 상품관리 뷰에서 로그아웃 버튼을 눌렀을 경우
             	c_dao.getInstance().make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
                PM.setVisible(false);
@@ -268,7 +301,6 @@ public class PCController implements Runnable {
             } else if (obj == PM.btn[2]) { // 삭제
                cp.deletion();
             } else {
-
             }
          }
       });

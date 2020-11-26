@@ -24,7 +24,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 //로그인 뷰 -> 관리자 뷰 -> 고객관리 뷰 (싱글톤 패턴)
-public class CusManager extends JFrame {
+public class CusManager extends JPanel {
 	private static CusManager CM = new CusManager();
 	private static Container c;
 	JLabel title = new JLabel("고객관리");
@@ -43,22 +43,22 @@ public class CusManager extends JFrame {
 	public SeatPanel SP = new SeatPanel();
 	public ChatPanel CP = new ChatPanel();
 
-	JToolBar bar = new JToolBar();
-	public JButton previousBtn = new JButton("< 이전");
-	public JButton logoutBtn = new JButton("로그아웃");
+	// JToolBar bar = new JToolBar();
+	// public JButton previousBtn = new JButton("< 이전");
+	// public JButton logoutBtn = new JButton("로그아웃");
 
 	public boolean loginFlag = false;
 	public String id = "관리자";
 
 	private CusManager() {
-		super("고객관리");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// super("고객관리");
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// 툴바 interface
-		bar.add(previousBtn);
-		bar.addSeparator(new Dimension(750, 30));
-		bar.add(logoutBtn);
-		add(bar, BorderLayout.NORTH);
+		// // 툴바 interface
+		// bar.add(previousBtn);
+		// bar.addSeparator(new Dimension(750, 30));
+		// bar.add(logoutBtn);
+		// add(bar, BorderLayout.NORTH);
 
 		JLayeredPane layeredpane = new JLayeredPane();
 		layeredpane.setBounds(0, 0, 700, 600);
@@ -76,9 +76,9 @@ public class CusManager extends JFrame {
 		layeredpane.add(rightPanel);
 		add(layeredpane);
 		setSize(900, 700);
-		setLocationRelativeTo(null);
+		// LV.setLocationRelativeTo(null);
 		// 크기 고정
-		super.setResizable(false);
+		// LV.setResizable(false);
 
 		setVisible(false);
 //		chatInput.addActionListener(new ActionListener() {
@@ -161,7 +161,7 @@ public class CusManager extends JFrame {
 
 	public void addButtonActionListener(ActionListener listener) {
 		chatInput.addActionListener(listener);
-		previousBtn.addActionListener(listener);
-		logoutBtn.addActionListener(listener);
+		// previousBtn.addActionListener(listener);
+		// logoutBtn.addActionListener(listener);
 	}
 }
