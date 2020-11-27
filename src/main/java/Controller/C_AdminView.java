@@ -23,6 +23,8 @@ public class C_AdminView implements I_AdminView{
 		// LV.setVisible(false);
 		LV.cardLayout.show(LV.window, "cusManager");
 		LV.setSize(900, 700);
+		LV.setLocationRelativeTo(null);
+		LV.setResizable(false);		// 크기 고정
 		toolBar.setVisibleToolBar(true);
 		LV.logoutBtn.setVisible(true);
 	}

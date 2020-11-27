@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -65,11 +67,13 @@ public class CusManager extends JPanel {
 		layeredpane.setLayout(null);
 
 		layeredpane.setLayout(new GridLayout(1, 2));
-
-		leftPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 40));
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		title.setFont(new Font("고딕체", Font.BOLD, 38));
+
 		leftPanel.add(title);
+		leftPanel.add(Box.createVerticalStrut(50));
 		leftPanel.add(SP);
+		leftPanel.add(Box.createVerticalStrut(10));
 		layeredpane.add(leftPanel);
 
 		rightPanel.add(CP);
