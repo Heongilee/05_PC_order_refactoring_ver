@@ -47,20 +47,20 @@ public class ProdManager extends JPanel {
 	private ProductPanel PP = new ProductPanel();
 	private ShowPanel SP = new ShowPanel();
 
-	JToolBar bar = new JToolBar();
-	public JButton previousBtn = new JButton("< 이전");
-	public JButton logoutBtn = new JButton("로그아웃");
+	// JToolBar bar = new JToolBar();
+	// public JButton previousBtn = new JButton("< 이전");
+	// public JButton logoutBtn = new JButton("로그아웃");
 	
 	private ProdManager() {
 		// super("상품관리");
 		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 
-		// 툴바 interface
-		bar.add(previousBtn);
-		bar.addSeparator(new Dimension(750, 30));
-		bar.add(logoutBtn);
-		add(bar, BorderLayout.NORTH);
+		// // 툴바 interface
+		// bar.add(previousBtn);
+		// bar.addSeparator(new Dimension(750, 30));
+		// bar.add(logoutBtn);
+		// add(bar, BorderLayout.NORTH);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -157,8 +157,8 @@ public class ProdManager extends JPanel {
 	
 	//리스너 핸들러 연결 메소드
 	public void addButtonActionListener(ActionListener listener) {
-		previousBtn.addActionListener(listener);
-		logoutBtn.addActionListener(listener);
+		// previousBtn.addActionListener(listener);
+		// logoutBtn.addActionListener(listener);
 		for(int i=0;i<3;i++)
 			btn[i].addActionListener(listener);
 		prodCombo.addActionListener(listener);

@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.ViewState;
 import View.CusManager;
 import View.LoginView;
 import View.ProdManager;
@@ -11,25 +12,30 @@ public class C_AdminView implements I_AdminView{
 	CusManager CM = CusManager.getInstance();
 	LoginView LV = LoginView.getInstance();
 	ProdManager PM = ProdManager.getInstance();
+	ViewState viewState = ViewState.getInstance();
 
 	ToolBar toolBar = ToolBar.getInstance();
 	
 	//고객관리 페이지로 이동한다.
 	@Override
 	public void Goto_CustomerManager() {
-		CM.setVisible(true);
-		LV.setVisible(false);
-
+		// CM.setVisible(true);
+		// LV.setVisible(false);
+		LV.cardLayout.show(LV.window, "cusManager");
+		LV.setSize(900, 700);
 		toolBar.setVisibleToolBar(true);
+		LV.logoutBtn.setVisible(true);
 	}
 	
 	//상품관리 페이지로 이동한다.
 	@Override
 	public void Goto_ProductManager() {
-		PM.setVisible(true);
-		LV.setVisible(false);
-		
+		// PM.setVisible(true);
+		// LV.setVisible(false);
+		LV.cardLayout.show(LV.window, "prodManager");
+		LV.setSize(900, 700);
 		toolBar.setVisibleToolBar(true);
+		LV.logoutBtn.setVisible(true);
 	}
 	
 }
