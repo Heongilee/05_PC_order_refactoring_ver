@@ -184,6 +184,11 @@ public class PCController implements Runnable {
                } else if (viewState.getCurrent_view_state().equals(viewState.getviewStateList("ProdManager"))) {
                   toolBar.logoutFromProdManager();
                } else {}
+               toolBar.setVisibleToolBar(false);
+
+               // then, change viewState to LoginView
+               viewState.setCurrent_view_state(viewState.getviewStateList("LoginView"));
+               System.out.println(viewState.getCurrent_view_state());
             } else {
 
             }
