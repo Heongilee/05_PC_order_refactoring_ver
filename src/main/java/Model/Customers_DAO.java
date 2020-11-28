@@ -4,6 +4,7 @@ import java.sql.*;
 import javax.swing.JOptionPane;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
+import Controller.AccountChecker;
 import View.LoginView;
 import View.SignUpView;
 
@@ -16,6 +17,9 @@ public class Customers_DAO implements DAO_Interface{
    public static PreparedStatement pstmt;
    public static Statement stmt;
    public static ResultSet rs;
+
+   // 참조객체 선언부
+   public static AccountChecker accountChecker = AccountChecker.getInstance();
    
    public static Connection getConnection() throws Exception{
       conn = null;
@@ -203,15 +207,41 @@ public class Customers_DAO implements DAO_Interface{
    }
    
    // 로그인 시도하는 메소드
-      public boolean Try_Login(String id, String pw, int f) {
-         boolean RET = false;
+      public void Try_Login(String id, String pw, int f) {
          String sql = "SELECT cNAME, cPW, cMODE FROM CUSTOMERS WHERE cNAME = ?";
          try {
             conn = getConnection();
 
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            rs = pstmt.executeQuery();
+            ResultSet tryLogin_ResultSet = pstmt.executeQuery();
+
+            if(doesYourIdExist(tryLogin_ResultSet)) accountChecker.gotoNextLevel();
+            else {
+               accountChecker.backtoFirstStep();
+               JOptionPane.showMessageDialog(null, "없는 아이디 입니다.", "ERROR", JOptionPane.ERROR_MESSAGE);
+               return ;
+            }
+            if(isAlreadyLogined(id)) accountChecker.gotoNextLevel();
+            else {
+               accountChecker.backtoFirstStep();
+               JOptionPane.showMessageDialog(null, "이미 로그인중 입니다.", "ERROR", JOptionPane.ERROR_MESSAGE);
+               return ;
+            }
+            if(isPasswordCorrect(tryLogin_ResultSet, pw)) accountChecker.gotoNextLevel();
+            else {
+               accountChecker.backtoFirstStep();
+               JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.", "ERROR", JOptionPane.ERROR_MESSAGE);
+               return ;
+            }
+            if(isValidModeAccess(tryLogin_ResultSet, f)) accountChecker.gotoNextLevel();
+            else {
+               accountChecker.backtoFirstStep();
+               JOptionPane.showMessageDialog(null, "모드 접근이 잘못됐습니다.", "ACCESS DENIED", JOptionPane.ERROR_MESSAGE);
+               return ;
+            }
+            /* -------------------------------------------------------------------------------------------------------------------
+            
             if (rs.next()) { // 튜플이 존재 -> 아이디 조회 성공!
                if ((rs.getString(2).equals(pw)) && (rs.getInt(3) == f) && get_check(id)) { // 비밀번호와 모드 접근이 일치하다면...
                   RET = true;
@@ -221,13 +251,12 @@ public class Customers_DAO implements DAO_Interface{
                } else if (rs.getInt(3) != f) { // 비밀번호는 맞는데 모드 접근이 다르다면...
                   JOptionPane.showMessageDialog(null, "모드 접근이 잘못됐습니다.", "ACCESS DENIED", JOptionPane.ERROR_MESSAGE);
                   RET = false;
-               } else {
-
-               }
+               } else {}
             } else { // 튜플이 없음 -> 에러 메시지 출력(없는 아이디 입니다...)
                JOptionPane.showMessageDialog(null, "없는 아이디 입니다.", "ERROR", JOptionPane.ERROR_MESSAGE);
                RET = false;
             }
+            ------------------------------------------------------------------------------------------------------------------- */
          } catch (SQLException e1) {
             JOptionPane.showMessageDialog(null, "SQLException()이 발생했습니다.", "Exception", JOptionPane.ERROR_MESSAGE);
             e1.printStackTrace();
@@ -237,10 +266,26 @@ public class Customers_DAO implements DAO_Interface{
             Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
          }
 
-         return RET;
+         return ;
       }
       
-      public String getCash(String id) {// 포인트 가져오는 메소드
+      private boolean isAlreadyLogined(String id) {
+		   return get_check(id);
+	   }
+
+	private boolean isValidModeAccess(ResultSet rs, int mode_flag) throws SQLException{
+		   return (rs.getInt(3) == mode_flag) ? true:false;
+	   }
+
+	private boolean isPasswordCorrect(ResultSet rs, String pw) throws SQLException{
+		   return rs.getString(2).equals(pw);
+	   }
+
+	private boolean doesYourIdExist(ResultSet rs) throws SQLException{
+         return rs.next();
+	   }
+
+	public String getCash(String id) {// 포인트 가져오는 메소드
          String result = "";
          String sql = "SELECT cBALANCE FROM CUSTOMERS WHERE cNAME = ?";
          try {
@@ -318,20 +363,20 @@ public class Customers_DAO implements DAO_Interface{
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            rs = pstmt.executeQuery();
+            ResultSet getCheck_ResultSet = pstmt.executeQuery();
             
-            if(rs.next()) {
-               ok = !(rs.getBoolean(1));//false일때 입장 true일때 로그인 실패
+            if(getCheck_ResultSet.next()) {
+               ok = !(getCheck_ResultSet.getBoolean(1));
             }
             else {
-            	JOptionPane.showMessageDialog(null, "없는 아이디 입니다.", "ERROR", JOptionPane.ERROR_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "없는 아이디 입니다. -- 2", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
          }
          catch(Exception e) {
             e.printStackTrace();
          }
          finally {
-            Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+            // Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
          }
          return ok;
       }
