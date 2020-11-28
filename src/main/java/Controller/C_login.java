@@ -20,7 +20,10 @@ public class C_login implements I_Login{
 
 	//사용자가 모드에 맞는 로그인을 시도하는지 확인하는 메소드.
 	@Override
-	public boolean Mode_Check(String id, String pw, int flag) {
+	public void stepIntoTryLogin(String id, String pw, int flag) {
+		dao.Try_Login(id, pw, flag);
+		// return (dao.Try_Login(id, pw, flag))? true:false;
+		/*
 		boolean RET = false;
 		if(dao.Try_Login(id, pw, flag)) {
 			RET = true;
@@ -28,19 +31,19 @@ public class C_login implements I_Login{
 			switch(flag) 
 			{
 				case 0:	//(관리자 cMODE : 0)
-					System.out.println("[1] : C_login()\\(관리자 cMODE : 0)");
+				System.out.println("[1] : C_login()\\(관리자 cMODE : 0)");
 					break;
 				case 1:	//(사용자 cMODE : 1) -> 클라이언트 ArrayList에 추가...
 					System.out.println("[1] : C_login()\\(사용자 cMODE : 1)");
 					break;
 					default:
 						break;
-			}
+					}
 		}
 		else {
 			RET = false;
 		}
-		
 		return RET;
+		*/
 	}
 }

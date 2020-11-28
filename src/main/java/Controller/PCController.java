@@ -40,7 +40,7 @@ public class PCController implements Runnable {
    public final GUIView GUI;
    public final AdminView AV;
    public final SignUpView SUV;
-   public final C_login cl;
+   public static C_login cl;
    public final C_SignUp cs;
    public final C_ProdManager cp;
    public final C_UserView cu;
@@ -49,6 +49,7 @@ public class PCController implements Runnable {
    private final PCChatData GUIchatData;
    
    // 참조객체 선언.
+   public static AccountChecker accountChecker = AccountChecker.getInstance();
    public static Customers_DAO c_dao = Customers_DAO.getInstance();
    public static Orders_DAO o_dao;
    public static ToolBar toolBar = ToolBar.getInstance();
@@ -105,11 +106,12 @@ public class PCController implements Runnable {
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
-            // 로그인 버튼을 눌렀을 때 get_check를 통해서 이미 로그인 중 인지에 대한 여부를 확인한다.
-            if (obj == LV.loginbt && c_dao.get_check(LV.loginTextField.getText())) {
-               if (LV.server.isSelected()) { // admin mode에 체크 되어있을 경우 (관리자 cMODE : 0)
-                  if (cl.Mode_Check(LV.loginTextField.getText(), LV.passwordField.getText(), 0)) {
-                     // ------- 로그인 성공!! -------
+            // 로그인 버튼이 눌렸을 경우...
+            if(obj == LV.loginbt) {
+               accountChecker.runAccountChecker();
+               if(accountChecker.getValidationPointer() == accountChecker.LOGIN_SUCCESS){
+                  // ------- 관리자로 로그인 성공! -------
+                  if(LV.server.isSelected()) {
                      c_dao.make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
                      
                      /*   화면 전환   */
@@ -124,14 +126,8 @@ public class PCController implements Runnable {
                      /* 관리자 화면으로 상태 기록 */
                      viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
                      System.out.println(viewState.getCurrent_view_state());
-                  } else {
-                     // ------- 로그인 실패... -------
-                     return;
-                  }
-
-               } else if (LV.user.isSelected()) { // user mode에 체크 되어있을 경우 (사용자 cMODE : 1)
-                  // ------- 로그인 성공!! -------
-                  if (cl.Mode_Check(LV.loginTextField.getText(), LV.passwordField.getText(), 1)) {
+                  // ------- 사용자로 로그인 성공! -------
+                  } else if(LV.user.isSelected()) {
                      c_dao.make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
                      LV.bar.setVisible(true);//bar를 활성
 
@@ -154,11 +150,7 @@ public class PCController implements Runnable {
                      /* 사용자 화면으로 상태 기록 */
                      viewState.setCurrent_view_state(viewState.getviewStateList("GUIView"));
                      System.out.println(viewState.getCurrent_view_state());
-                  } else {
-                     // ------- 로그인 실패... -------
-                     return;
-                  }
-               } else {
+                  } else {}
                }
             } else if (obj == LV.SignUpbtn) { // 회원가입 버튼을 눌렀을 경우
                LV.cardLayout.show(LV.window, "signUp");
