@@ -2,6 +2,7 @@ package Controller;
 
 import javax.swing.JOptionPane;
 
+import Model.AccountChecker_DTO;
 import Model.Customers_DAO;
 
 /*
@@ -20,8 +21,8 @@ public class C_login implements I_Login{
 
 	//사용자가 모드에 맞는 로그인을 시도하는지 확인하는 메소드.
 	@Override
-	public void stepIntoTryLogin(String id, String pw, int flag) {
-		dao.Try_Login(id, pw, flag);
+	public AccountChecker_DTO stepIntoTryLogin(String id, String pw, int flag) {
+		return dao.Try_Login(id, pw, flag);
 		// return (dao.Try_Login(id, pw, flag))? true:false;
 		/*
 		boolean RET = false;

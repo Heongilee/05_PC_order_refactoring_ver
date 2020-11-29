@@ -112,7 +112,7 @@ public class PCController implements Runnable {
                if(accountChecker.getValidationPointer() == accountChecker.LOGIN_SUCCESS){
                   // ------- 관리자로 로그인 성공! -------
                   if(LV.server.isSelected()) {
-                     c_dao.make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
+                     c_dao.make_check(LV.loginTextField.getText());
                      
                      /*   화면 전환   */
                      LV.cardLayout.show(LV.window, "admin");
@@ -132,8 +132,6 @@ public class PCController implements Runnable {
                      LV.bar.setVisible(true);//bar를 활성
 
                      /* 화면 전환 */
-                     // LV.setVisible(false);
-                     // GUI.setVisible(true);
                      LV.cardLayout.show(LV.window, "guiView");
                      LV.logoutBtn.setVisible(true);
                      LV.previousBtn.setVisible(false);
