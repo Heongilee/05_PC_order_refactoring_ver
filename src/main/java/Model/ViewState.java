@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class ViewState {
+    // ! This code has been deprecated...
     // private static Vector<String> viewStateList = null;
     private static ViewState _viewState = null;
     private String currentViewState = "";
