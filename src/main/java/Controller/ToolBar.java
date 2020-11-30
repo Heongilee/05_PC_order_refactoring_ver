@@ -16,63 +16,64 @@ import View.SignUpView;
 
 /* 싱글톤 패턴으로 툴바를 관리하기 위한 클래스. */
 public class ToolBar {
-    private static ToolBar toolbar = null;
+    private static ToolBar toolBar = null;
     private static ViewState viewState = ViewState.getInstance();
 
     // 참조 객체 선언부
-    public static final LoginView LV = LoginView.getInstance();
-    public static final CusManager CM = CusManager.getInstance();
-    public static final SignUpView SUV = SignUpView.getInstance();
-    public static Customers_DAO c_dao = Customers_DAO.getInstance();
-    public static final ProdManager PM = ProdManager.getInstance();
-    
-    // 로그아웃 기능에 필요한 참조객체
-    public static final GUIView GUI = GUIView.getInstance();
-    public static Gson gson = PCController.gson;
-    public static PrintWriter outMsg = PCController.outMsg;
-    public static BufferedReader inMsg = PCController.inMsg;
-    public static Socket socket = PCController.socket;
-    public static boolean status = PCController.status;
-    
+    public static final LoginView _loginView = LoginView.getInstance();
+    public static final CusManager _CusManagerView = CusManager.getInstance();
+    public static final SignUpView _signUpView = SignUpView.getInstance();
+    public static Customers_DAO _customerDao = Customers_DAO.getInstance();
+    public static final ProdManager _prodManagerView = ProdManager.getInstance();
 
-    private ToolBar() {}
+    // 로그아웃 기능에 필요한 참조객체
+    public static final GUIView _guiView = GUIView.getInstance();
+    public static Gson _gson = PCController.gson;
+    public static PrintWriter _outMsg = PCController.outMsg;
+    public static BufferedReader _inMsg = PCController.inMsg;
+    public static Socket _socket = PCController.socket;
+    public static boolean _status = PCController.status;
+
+    private ToolBar() {
+    }
 
     public static ToolBar getInstance() {
-        if(toolbar == null){
-            toolbar = new ToolBar();
+        if (toolBar == null) {
+            toolBar = new ToolBar();
         }
-        return toolbar;
+        return toolBar;
     }
 
-    void loadReferenceObject_for_logoutBtn() {
-        gson = PCController.gson;
-        outMsg = PCController.outMsg;
-        inMsg = PCController.inMsg;
-        socket = PCController.socket;
-        status = PCController.status;
+    void loadReferenceObjectForLogoutBtn() {
+        _gson = PCController.gson;
+        _outMsg = PCController.outMsg;
+        _inMsg = PCController.inMsg;
+        _socket = PCController.socket;
+        _status = PCController.status;
 
         return;
     }
-    
+
     void clearSignupForm() {
-        LV.signUpView.IdField.setText("");
-        LV.signUpView.PassField.setText("");
-        LV.signUpView.NameField.setText("");
-        LV.signUpView.EmailField.setText("");
-        
+        _loginView.signUpView.IdField.setText("");
+        _loginView.signUpView.PassField.setText("");
+        _loginView.signUpView.NameField.setText("");
+        _loginView.signUpView.EmailField.setText("");
+
         return;
     }
-    
-    void logoutFromProdManager() {
+
+    //! This code has been deprecated... 
+    /*void logoutFromProdManager() {
         // 참조 객체 리로드
         loadReferenceObject_for_logoutBtn();
 
-        c_dao.make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
+        c_dao.make_check(LV.loginTextField.getText()); // DB 체크값을 바꿔준다.
         LV.cardLayout.show(LV.window, "layer");
         setVisibleToolBar(false);
         LV.setSize(700, 600);
-
-        return ;
+        
+        return;
     }
     
     void logoutFromCusManager() {
@@ -81,7 +82,7 @@ public class ToolBar {
         
         outMsg.println(gson.toJson(new Message(GUI.seat, GUI.id, "", "", "adminlogout", "")));
         CM.chatContent.setText("");
-        c_dao.make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
+        c_dao.make_check(LV.loginTextField.getText()); // DB 체크값을 바꿔준다.
         LV.cardLayout.show(LV.window, "layer");
         LV.setSize(700, 600);
         try {
@@ -92,10 +93,10 @@ public class ToolBar {
             ex.printStackTrace();
         }
         PCController.status = status = false;
-
-        return ;
+        
+        return;
     }
-
+    
     void logoutFromGUIView() {
         // 참조 객체 리로드
         loadReferenceObject_for_logoutBtn();
@@ -106,41 +107,42 @@ public class ToolBar {
         LV.cardLayout.show(LV.window, "layer");
         LV.setSize(700, 600);
         try {
-           outMsg.close();
-           inMsg.close();
-           socket.close();
+            outMsg.close();
+            inMsg.close();
+            socket.close();
         } catch (IOException ex) {
-           ex.printStackTrace();
+            ex.printStackTrace();
         }
         PCController.status = status = false;
     }
-
-    void toolBarController(String currentPage) {
-        switch(currentPage) {
+    */
+    
+    void prevButtonController(String currentPage) {
+        switch (currentPage) {
             case "SignUpView": // cardLayout/"layeredpane"
-                SUV.setVisible(false);
-                LV.setVisible(true);
-                LV.cardLayout.show(LV.window, "layer");
+                _signUpView.setVisible(false);
+                _loginView.setVisible(true);
+                _loginView.cardLayout.show(_loginView.window, "layer");
                 setVisibleToolBar(false);
 
-                viewState.setCurrent_view_state(viewState.getviewStateList("LoginView"));
-                System.out.println(viewState.getCurrent_view_state());
+                viewState.setCurrent_view_state("LoginView");
+                System.out.println(viewState.getCurrentViewState());
                 break;
-            case "CusManager":
-                LV.cardLayout.show(LV.window, "admin");
-                LV.setSize(700, 600);
+            case "CusManagerView":
+                _loginView.cardLayout.show(_loginView.window, "admin");
+                _loginView.setSize(700, 600);
                 setVisibleToolBar(false);
-                
-                viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
-                System.out.println(viewState.getCurrent_view_state());
+
+                viewState.setCurrent_view_state("AdminView");
+                System.out.println(viewState.getCurrentViewState());
                 break;
-            case "ProdManager":
-                LV.cardLayout.show(LV.window, "admin");
-                LV.setSize(700, 600);
+            case "ProdManagerView":
+                _loginView.cardLayout.show(_loginView.window, "admin");
+                _loginView.setSize(700, 600);
                 setVisibleToolBar(false);
-                
-                viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
-                System.out.println(viewState.getCurrent_view_state());
+
+                viewState.setCurrent_view_state("AdminView");
+                System.out.println(viewState.getCurrentViewState());
                 break;
             case "AdminView": // cardLayout/"admin"
                 break;
@@ -150,18 +152,53 @@ public class ToolBar {
 
     /* true면 보이게, false면 감추게... */
     void setVisibleToolBar(boolean flag) {
-        LV.bar.setVisible(flag);
+        _loginView.bar.setVisible(flag);
     }
 
     /* 카드레이아웃에서 로그인 뷰를 불러옴. */
     void gotoLoginView() {
-        LV.cardLayout.show(LV.window, "layer");
-        return ;
+        _loginView.cardLayout.show(_loginView.window, "layer");
+        return;
     }
 
     /* 텍스트 필드에 적힌 아이디값을 가지고 UPDATE문을 수행해 로그아웃 상태(check)로 변경함. */
     void changeToLogout() {
-        c_dao.make_check(LV.loginTextField.getText());
-        return ;
+        _customerDao.make_check(_loginView.loginTextField.getText());
+        return;
+    }
+
+    public void logoutButtonController(String currentPage) {
+        // 참조 객체 리로드
+        loadReferenceObjectForLogoutBtn();
+
+        switch (currentPage) {
+            case "GUIView":
+                _outMsg.println(_gson.toJson(new Message(_guiView.seat, _guiView.id, "", "", "logout", "adminlogin")));
+                _guiView.msgInput.setText("");
+                break;
+            case "CusManagerView":
+                _outMsg.println(_gson.toJson(new Message(_guiView.seat, _guiView.id, "", "", "adminlogout", "")));
+                _CusManagerView.chatContent.setText("");
+                break;
+            case "ProdManagerView":
+                // nothing...
+                break;
+            default:
+                break;
+        }
+        _customerDao.make_check(_loginView.loginTextField.getText()); // DB 체크값을 바꿔준다.
+        _loginView.cardLayout.show(_loginView.window, "layer");
+        _loginView.setSize(700, 600);
+        try {
+            _outMsg.close();
+            _inMsg.close();
+            _socket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        setVisibleToolBar(false);
+
+        PCController.status = _status = false;
+        return;
     }
 }
