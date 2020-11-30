@@ -319,19 +319,18 @@ public class Customers_DAO implements DAO_Interface{
       }
 
       public static boolean get_check(String id) {// 이미 로그인 중인지에 대한 check값을 가져온다
-         boolean ok = false;
+         boolean ok = true;
          String sql = "SELECT CUSTOMERS.CHECK FROM CUSTOMERS WHERE CUSTOMERS.cNAME= ?";
          try {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            ResultSet getCheck_ResultSet = pstmt.executeQuery();
+            ResultSet getCheckResultSet = pstmt.executeQuery();
             
-            if(getCheck_ResultSet.next()) {
-               ok = !(getCheck_ResultSet.getBoolean(1));
+            if(getCheckResultSet.next()) {
+               ok = getCheckResultSet.getBoolean(1);
             }
             else {
-            	JOptionPane.showMessageDialog(null, "없는 아이디 입니다. -- 2", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
          }
          catch(Exception e) {

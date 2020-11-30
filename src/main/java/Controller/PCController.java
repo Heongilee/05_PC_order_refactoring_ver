@@ -124,8 +124,8 @@ public class PCController implements Runnable {
                      connectServer();
 
                      /* 관리자 화면으로 상태 기록 */
-                     viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
-                     System.out.println(viewState.getCurrent_view_state());
+                     viewState.setCurrent_view_state("AdminView");
+                     System.out.println(viewState.getCurrentViewState());
                   // ------- 사용자로 로그인 성공! -------
                   } else if(LV.user.isSelected()) {
                      c_dao.make_check(LV.loginTextField.getText()); //체크값을 1로 바꿔 줌.
@@ -146,39 +146,44 @@ public class PCController implements Runnable {
                      connectServer(); // 로그인 성공에 따른 클라이언트 스레드 생성.
 
                      /* 사용자 화면으로 상태 기록 */
-                     viewState.setCurrent_view_state(viewState.getviewStateList("GUIView"));
-                     System.out.println(viewState.getCurrent_view_state());
+                     viewState.setCurrent_view_state("GUIView");
+                     System.out.println(viewState.getCurrentViewState());
                   } else {}
                }
             } else if (obj == LV.SignUpbtn) { // 회원가입 버튼을 눌렀을 경우
                LV.cardLayout.show(LV.window, "signUp");
                toolBar.setVisibleToolBar(true);
                LV.logoutBtn.setVisible(false);
+               LV.previousBtn.setVisible(true);
                toolBar.clearSignupForm();
 
-               viewState.setCurrent_view_state(viewState.getviewStateList("SignUpView"));
-               System.out.println(viewState.getCurrent_view_state());
+               viewState.setCurrent_view_state("SignUpView");
             } else if (obj == LV.previousBtn) { // 툴바 이전 버튼을 눌렀을 경우
-               if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("SignUpView"))){
+               toolBar.prevButtonController(viewState.getCurrentViewState());
+               //! This code has been depricated...
+               /*if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("SignUpView"))){
                   toolBar.toolBarController("SignUpView");
                }else if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("CusManager"))) {
                   toolBar.toolBarController("CusManager");
                }else if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("ProdManager"))) {
                   toolBar.toolBarController("ProdManager");
                }else {}
+               */
             } else if (obj == LV.logoutBtn) {
-               if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("GUIView"))){
+               toolBar.logoutButtonController(viewState.getCurrentViewState());
+               //! This code has been depricated...
+               /*if(viewState.getCurrent_view_state().equals(viewState.getviewStateList("GUIView"))){
                   toolBar.logoutFromGUIView();
                } else if (viewState.getCurrent_view_state().equals(viewState.getviewStateList("CusManager"))) {
                   toolBar.logoutFromCusManager();
                } else if (viewState.getCurrent_view_state().equals(viewState.getviewStateList("ProdManager"))) {
                   toolBar.logoutFromProdManager();
                } else {}
+               */
                toolBar.setVisibleToolBar(false);
 
                // then, change viewState to LoginView
-               viewState.setCurrent_view_state(viewState.getviewStateList("LoginView"));
-               System.out.println(viewState.getCurrent_view_state());
+               viewState.setCurrent_view_state("LoginView");
             } else {
 
             }
@@ -192,12 +197,12 @@ public class PCController implements Runnable {
             Object obj = e.getSource();
             if (obj == LV.adminView.cm_btn) { // 관리자 뷰에서 고객관리 버튼을 눌렀을 경우
                ca.Goto_CustomerManager();
-               viewState.setCurrent_view_state(viewState.getviewStateList("CusManager"));
-               System.out.println(viewState.getCurrent_view_state());
+               viewState.setCurrent_view_state("CusManagerView");
+               System.out.println(viewState.getCurrentViewState());
             } else if (obj == LV.adminView.pm_btn) { // 관리자 뷰에서 상품관리 버튼을 눌렀을 경우
                ca.Goto_ProductManager();
-               viewState.setCurrent_view_state(viewState.getviewStateList("ProdManager"));
-               System.out.println(viewState.getCurrent_view_state());
+               viewState.setCurrent_view_state("ProdManagerView");
+               System.out.println(viewState.getCurrentViewState());
             } 
          }
       });
@@ -221,8 +226,8 @@ public class PCController implements Runnable {
                } catch (SQLException e1) {
                   e1.printStackTrace();
                } finally {
-                  viewState.setCurrent_view_state(viewState.getviewStateList("LoginView"));
-                  System.out.println(viewState.getCurrent_view_state());
+                  viewState.setCurrent_view_state("LoginView");
+                  System.out.println(viewState.getCurrentViewState());
                }
             }
 
@@ -257,27 +262,29 @@ public class PCController implements Runnable {
                   }
                }
             } 
-            // else if (obj == LV.previousBtn) { // 고객관리 뷰에서 이전 버튼을 눌렀을 경우
-            //    CM.setVisible(false);
-            //    LV.setVisible(true);
-            //    viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
-            //    System.out.println(viewState.getCurrent_view_state());
-            // } else if (obj == LV.logoutBtn) { // 고객관리 뷰에서 로그아웃 버튼을 눌렀을 경우
-            // 	outMsg.println(gson.toJson(new Message(GUI.seat, GUI.id, "", "", "adminlogout", "")));
-            //    CM.chatContent.setText("");
-            //    c_dao.getInstance().make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
-            //    CM.setVisible(false);
-            //    LV.getInstance().setVisible(true);
-            //    LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
-            //    try {
-            //        outMsg.close();
-            //        inMsg.close();
-            //        socket.close();
-            //     } catch (IOException ex) {
-            //        ex.printStackTrace();
-            //     }
-            //     status = false;
-            // } 
+            // ! This code has been deprecated...
+            /*else if (obj == LV.previousBtn) { // 고객관리 뷰에서 이전 버튼을 눌렀을 경우
+               CM.setVisible(false);
+               LV.setVisible(true);
+               viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
+               System.out.println(viewState.getCurrent_view_state());
+            } else if (obj == LV.logoutBtn) { // 고객관리 뷰에서 로그아웃 버튼을 눌렀을 경우
+            	outMsg.println(gson.toJson(new Message(GUI.seat, GUI.id, "", "", "adminlogout", "")));
+               CM.chatContent.setText("");
+               c_dao.getInstance().make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
+               CM.setVisible(false);
+               LV.getInstance().setVisible(true);
+               LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
+               try {
+                   outMsg.close();
+                   inMsg.close();
+                   socket.close();
+                } catch (IOException ex) {
+                   ex.printStackTrace();
+                }
+                status = false;
+            } 
+            */
             else {}
          }
       });
@@ -287,17 +294,19 @@ public class PCController implements Runnable {
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
-            // if (obj == LV.previousBtn) { // 상품관리 뷰에서 이전 버튼을 눌렀을 경우
-            //    PM.setVisible(false);
-            //    LV.setVisible(true);
-            //    viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
-            //    System.out.println(viewState.getCurrent_view_state());
-            // } else if (obj == PM.logoutBtn) { // 상품관리 뷰에서 로그아웃 버튼을 눌렀을 경우
-            // 	c_dao.getInstance().make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
-            //    PM.setVisible(false);
-            //    LV.getInstance().setVisible(true);
-            //    LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
-            // } else 
+            // ! This code has been deprecated...
+            /*if (obj == LV.previousBtn) { // 상품관리 뷰에서 이전 버튼을 눌렀을 경우
+               PM.setVisible(false);
+               LV.setVisible(true);
+               viewState.setCurrent_view_state(viewState.getviewStateList("AdminView"));
+               System.out.println(viewState.getCurrent_view_state());
+            } else if (obj == PM.logoutBtn) { // 상품관리 뷰에서 로그아웃 버튼을 눌렀을 경우
+            	c_dao.getInstance().make_check(LV.loginTextField.getText()); //DB 체크값을 바꿔준다.
+               PM.setVisible(false);
+               LV.getInstance().setVisible(true);
+               LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
+            } else 
+            */
             if (obj == PM.btn[0]) { // 등록
                cp.insertion();
             } else if (obj == PM.btn[1]) { // 조회
