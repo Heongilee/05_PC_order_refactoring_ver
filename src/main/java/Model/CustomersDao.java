@@ -246,94 +246,95 @@ public class CustomersDao implements DAO_Interface{
 
       return accountChecker_dto;
    }
-
-	public String getCash(String id) {// 포인트 가져오는 메소드
-         String result = "";
-         String sql = "SELECT cBALANCE FROM CUSTOMERS WHERE cNAME = ?";
-         try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, id);
-            rs = pstmt.executeQuery();
-            if (rs.next()) {
-               result = Integer.toString(rs.getInt(1));
-            }
-         } catch (Exception e) {
-            e.printStackTrace();
-         } finally {
-            CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
+   // 메서드 오버로딩 -- (1)
+	public String checkUserBalance(String id) {
+      String result = "";
+      String sql = "SELECT cBALANCE FROM CUSTOMERS WHERE cNAME = ?";
+      try {
+         conn = getConnection();
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setString(1, id);
+         rs = pstmt.executeQuery();
+         if (rs.next()) {
+            result = Integer.toString(rs.getInt(1));
          }
-         return result;
+      } catch (Exception e) {
+         e.printStackTrace();
+      } finally {
+         CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
       }
-      
-      public CustomersDto checkUserBalance(CustomersDto customersDto) {
-         ResultSet checkUserBalanceResultSet = null;
-         String query = "SELECT cBALANCE FROM CUSTOMERS WHERE cNAME = ?";
-         try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, customersDto.getCustomerId());
-            checkUserBalanceResultSet = pstmt.executeQuery();
-            if(checkUserBalanceResultSet.next()) {
-               customersDto.setCustomerBalance(checkUserBalanceResultSet.getInt(1));
-            }
-         } catch (Exception e) {
-            e.printStackTrace();
-         } finally {
-            CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
+      return result;
+   }
+   
+   // 메서드 오버로딩 -- (2)
+   public CustomersDto checkUserBalance(CustomersDto customersDto) {
+      ResultSet checkUserBalanceResultSet = null;
+      String query = "SELECT cBALANCE FROM CUSTOMERS WHERE cNAME = ?";
+      try {
+         conn = getConnection();
+         pstmt = conn.prepareStatement(query);
+         pstmt.setString(1, customersDto.getCustomerId());
+         checkUserBalanceResultSet = pstmt.executeQuery();
+         if(checkUserBalanceResultSet.next()) {
+            customersDto.setCustomerBalance(checkUserBalanceResultSet.getInt(1));
          }
-
-         return customersDto;
+      } catch (Exception e) {
+         e.printStackTrace();
+      } finally {
+         CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
       }
-      
-      public void make_check(String id) {//check값을 변경해준다
-         boolean ok;
-         String sql = "UPDATE CUSTOMERS SET CUSTOMERS.CHECK = ? WHERE cNAME = ?";
-         try {
-            ok = get_check(id);//check를 가져와서 true면, 이미 로그인 중이고, 아니면 로그인되어 있지 않은 상태이다.
-            conn = getConnection();
-            pstmt = conn.prepareStatement(sql);
-            if(ok)//이미 로그인 되있는 것
-               pstmt.setBoolean(1, true);
-            else
-               pstmt.setBoolean(1, false);
-            pstmt.setString(2, id);
-            int r = pstmt.executeUpdate();
+
+      return customersDto;
+   }
+   
+   public void make_check(String id) {//check값을 변경해준다
+      boolean ok;
+      String sql = "UPDATE CUSTOMERS SET CUSTOMERS.CHECK = ? WHERE cNAME = ?";
+      try {
+         ok = get_check(id);//check를 가져와서 true면, 이미 로그인 중이고, 아니면 로그인되어 있지 않은 상태이다.
+         conn = getConnection();
+         pstmt = conn.prepareStatement(sql);
+         if(ok)//이미 로그인 되있는 것
+            pstmt.setBoolean(1, true);
+         else
+            pstmt.setBoolean(1, false);
+         pstmt.setString(2, id);
+         int r = pstmt.executeUpdate();
+         
+         if(r > 0) {
             
-            if(r > 0) {
-               
-            }
-         }
-         catch(Exception e) {
-            e.printStackTrace();
-         } finally {
-            CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
          }
       }
+      catch(Exception e) {
+         e.printStackTrace();
+      } finally {
+         CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
+      }
+   }
 
-      public static boolean get_check(String id) {// 이미 로그인 중인지에 대한 check값을 가져온다
-         boolean ok = true;
-         String sql = "SELECT CUSTOMERS.CHECK FROM CUSTOMERS WHERE CUSTOMERS.cNAME= ?";
-         try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, id);
-            ResultSet getCheckResultSet = pstmt.executeQuery();
-            
-            if(getCheckResultSet.next()) {
-               ok = getCheckResultSet.getBoolean(1);
-            }
-            else {
-            }
+   public static boolean get_check(String id) {// 이미 로그인 중인지에 대한 check값을 가져온다
+      boolean ok = true;
+      String sql = "SELECT CUSTOMERS.CHECK FROM CUSTOMERS WHERE CUSTOMERS.cNAME= ?";
+      try {
+         conn = getConnection();
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setString(1, id);
+         ResultSet getCheckResultSet = pstmt.executeQuery();
+         
+         if(getCheckResultSet.next()) {
+            ok = getCheckResultSet.getBoolean(1);
          }
-         catch(Exception e) {
-            e.printStackTrace();
+         else {
          }
-         finally {
-            // Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
-         }
-         return ok;
       }
+      catch(Exception e) {
+         e.printStackTrace();
+      }
+      finally {
+         // Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+      }
+      return ok;
+   }
 
 	public void updateUserBalance(CustomersDto customersDto) {
       String query = "UPDATE CUSTOMERS SET cBALANCE = ? WHERE cNAME = ?";
