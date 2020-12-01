@@ -20,11 +20,11 @@ import javax.swing.JButton;
 
 import com.google.gson.Gson;
 
-import Model.Customers_DAO;
+import Model.CustomersDao;
 import Model.Message;
-import Model.Orders_DAO;
+import Model.OrdersDao;
 import Model.ViewState;
-import Model.Orders_DTO;
+import Model.OrdersDto;
 import Model.PCChatData;
 import View.AdminView;
 import View.CusManager;
@@ -50,8 +50,8 @@ public class PCController implements Runnable {
    
    // 참조객체 선언.
    public static AccountChecker accountChecker = AccountChecker.getInstance();
-   public static Customers_DAO c_dao = Customers_DAO.getInstance();
-   public static Orders_DAO o_dao;
+   public static CustomersDao c_dao = CustomersDao.getInstance();
+   public static OrdersDao o_dao;
    public static ToolBar toolBar = ToolBar.getInstance();
    public static ViewState viewState = ViewState.getInstance();
 
@@ -59,7 +59,7 @@ public class PCController implements Runnable {
    public static Gson gson = new Gson();
    
    // GUIView에서 JList에서 불러온 Product_DTO객체를 가지는 Vector
-   public static Vector<Orders_DTO> order_list = new Vector<Orders_DTO>();
+   public static Vector<OrdersDto> orderList = new Vector<OrdersDto>();
    
    // 메시지 클래스 참조 객체
    Message gson_message;
@@ -369,10 +369,10 @@ public class PCController implements Runnable {
       GUI.addMyMouseListener(new MouseAdapter() {
          @Override
        public void mousePressed(MouseEvent e) {
-            Orders_DTO tmp;
+            OrdersDto tmp;
             super.mousePressed(e);
             tmp = cu.Add_Orderlog();
-            order_list.add(tmp);
+            orderList.add(tmp);
        }
       });
    } // --------------------------- AppMain() 종료 -------------------------------

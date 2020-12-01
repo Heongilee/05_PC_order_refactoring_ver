@@ -251,7 +251,7 @@ public class Product_DAO implements DAO_Interface{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			Customers_DAO.closeJDBC(conn, pstmt, pstmt, rs);
+			CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
 		}
 		
 		return menu;

@@ -9,9 +9,9 @@ import View.LoginView;
 import View.SignUpView;
 
 //CUSTOMERS 테이블에 접근하기 위한 DAO 클래스.
-public class Customers_DAO implements DAO_Interface{
+public class CustomersDao implements DAO_Interface{
    //1. 바로 메모리 할당하는 방법을 사용.
-   private static Customers_DAO dao;
+   private static CustomersDao dao;
    private static LoginView LV = LoginView.getInstance();
    public static Connection conn;
    public static PreparedStatement pstmt;
@@ -68,28 +68,28 @@ public class Customers_DAO implements DAO_Interface{
       }
    }
    //3. 외부의 인스턴스화를 막는다.
-   private Customers_DAO() {}
+   private CustomersDao() {}
    
    //4. Customers_DAO의 인스턴스를 얻는 방법은 getInstance() 하나 뿐이다.
-   public static Customers_DAO getInstance() {
+   public static CustomersDao getInstance() {
       if(dao == null) {
-         dao = new Customers_DAO();
+         dao = new CustomersDao();
       }
       return dao;
    }
    
    //유효성 검사가 끝난 회원은 회원가입 양식에 따라 dto객체를 만들어서 INSERT문을 수행한다.
-   public void CUSTOMERS_FUNC1(Customer_DTO dto) throws SQLException {
+   public void CUSTOMERS_FUNC1(CustomersDto dto) throws SQLException {
       System.out.println(dto.toString());
       
       try {
          conn = getConnection();
          String sql = "INSERT INTO CUSTOMERS(CUSTOMERS.cNAME, CUSTOMERS.cPW, CUSTOMERS.cNICKNAME, CUSTOMERS.cEMAIL) VALUES (?, ?, ?, ?)";
          pstmt = conn.prepareStatement(sql);
-         pstmt.setString(1, dto.getCname());
-         pstmt.setString(2, dto.getCpw());
-         pstmt.setString(3, dto.getCnickname());
-         pstmt.setString(4, dto.getCemail());
+         pstmt.setString(1, dto.getCustomerId());
+         pstmt.setString(2, dto.getCustomerPassword());
+         pstmt.setString(3, dto.getCustomerNickName());
+         pstmt.setString(4, dto.getCustomerEmail());
          int r = pstmt.executeUpdate();
          if(r > 0) {   //삽입 성공
             JOptionPane.showMessageDialog(null, "회원가입 완료되었습니다.");
@@ -104,7 +104,7 @@ public class Customers_DAO implements DAO_Interface{
          e1.printStackTrace();
          
       } finally {
-         Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+         CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
          LV.cardLayout.show(LV.window, "layer");
          
          /*	회원가입 뷰의 모든 필드값 초기화	*/
@@ -136,7 +136,7 @@ public class Customers_DAO implements DAO_Interface{
       } catch (Exception e2) {
          e2.printStackTrace();
       } finally {
-         Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+         CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
       }
    }
    
@@ -156,7 +156,7 @@ public class Customers_DAO implements DAO_Interface{
       catch(Exception e) {
          e.printStackTrace();
       } finally {
-         Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+         CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
       }
       
       return ok;
@@ -179,7 +179,7 @@ public class Customers_DAO implements DAO_Interface{
       catch(Exception e) {
          e.printStackTrace();
       } finally {
-         Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+         CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
       }
       return ok;
    }
@@ -201,7 +201,7 @@ public class Customers_DAO implements DAO_Interface{
       catch(Exception e) {
          e.printStackTrace();
       } finally {
-         Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+         CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
       }
       return ok;
    }
@@ -241,7 +241,7 @@ public class Customers_DAO implements DAO_Interface{
       } catch (Exception e) {
          e.printStackTrace();
       } finally {
-         Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+         CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
       }
 
       return accountChecker_dto;
@@ -261,36 +261,29 @@ public class Customers_DAO implements DAO_Interface{
          } catch (Exception e) {
             e.printStackTrace();
          } finally {
-            Customers_DAO.closeJDBC(conn, pstmt, pstmt, rs);
+            CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
          }
          return result;
       }
       
-      public boolean Cash_Check(String id, int cash) {// 합계의 결제를 눌렀을 때 적용
-         boolean ok = false;
-         String sql = "SELECT cBALANCE FROM CUSTOMERS WHERE cNAME = ?";
+      public CustomersDto checkUserBalance(CustomersDto customersDto) {
+         ResultSet checkUserBalanceResultSet = null;
+         String query = "SELECT cBALANCE FROM CUSTOMERS WHERE cNAME = ?";
          try {
             conn = getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, id);
-            rs = pstmt.executeQuery();
-            if (rs.next()) {// 아이디에 해당한 잔액 조회 성공
-               if (cash <= rs.getInt(1)) {// 잔액이 더 많을때
-                  int value = (rs.getInt(1) - cash);
-                  sql = "UPDATE CUSTOMERS SET cBALANCE = ? WHERE cNAME = ?";
-                  pstmt = conn.prepareStatement(sql);
-                  pstmt.setInt(1, value);
-                  pstmt.setString(2, id);
-                  pstmt.executeUpdate();
-                  ok = true;
-               }
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, customersDto.getCustomerId());
+            checkUserBalanceResultSet = pstmt.executeQuery();
+            if(checkUserBalanceResultSet.next()) {
+               customersDto.setCustomerBalance(checkUserBalanceResultSet.getInt(1));
             }
          } catch (Exception e) {
             e.printStackTrace();
          } finally {
-            Customers_DAO.closeJDBC(conn, pstmt, pstmt, rs);
+            CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
          }
-         return ok;
+
+         return customersDto;
       }
       
       public void make_check(String id) {//check값을 변경해준다
@@ -314,7 +307,7 @@ public class Customers_DAO implements DAO_Interface{
          catch(Exception e) {
             e.printStackTrace();
          } finally {
-            Customers_DAO.closeJDBC(conn, pstmt, stmt, rs);
+            CustomersDao.closeJDBC(conn, pstmt, stmt, rs);
          }
       }
 
@@ -341,4 +334,21 @@ public class Customers_DAO implements DAO_Interface{
          }
          return ok;
       }
+
+	public void updateUserBalance(CustomersDto customersDto) {
+      String query = "UPDATE CUSTOMERS SET cBALANCE = ? WHERE cNAME = ?";
+      try {
+         conn = getConnection();
+         pstmt = conn.prepareStatement(query);
+         pstmt.setInt(1, (int) customersDto.getCustomerBalance());
+         pstmt.setString(2, customersDto.getCustomerId());
+         pstmt.executeUpdate();
+      } catch (SQLException se) {
+         se.printStackTrace();
+      } catch(Exception e) {
+         e.printStackTrace();
+      }
+
+      return ;
+   }
 }

@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import com.google.gson.Gson;
 
-import Model.Customers_DAO;
+import Model.CustomersDao;
 import Model.Message;
 import Model.ViewState;
 import View.CusManager;
@@ -23,7 +23,7 @@ public class ToolBar {
     public static final LoginView _loginView = LoginView.getInstance();
     public static final CusManager _CusManagerView = CusManager.getInstance();
     public static final SignUpView _signUpView = SignUpView.getInstance();
-    public static Customers_DAO _customerDao = Customers_DAO.getInstance();
+    public static CustomersDao _customerDao = CustomersDao.getInstance();
     public static final ProdManager _prodManagerView = ProdManager.getInstance();
 
     // 로그아웃 기능에 필요한 참조객체

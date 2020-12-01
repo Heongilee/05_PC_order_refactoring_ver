@@ -5,7 +5,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import Model.AccountChecker_DTO;
-import Model.Customers_DAO;
+import Model.CustomersDao;
 import View.LoginView;
 
 /*
@@ -26,7 +26,7 @@ public class AccountChecker {
     static final int LOGIN_SUCCESS = 4;
 
     // 참조 객체 선언부
-    public static Customers_DAO _customerDao = Customers_DAO.getInstance();
+    public static CustomersDao _customerDao = CustomersDao.getInstance();
     public static LoginView _loginView = LoginView.getInstance();
     public static C_login _loginController = PCController.cl;
 
@@ -142,7 +142,7 @@ public class AccountChecker {
     }
 
     private boolean isAlreadyLogined(AccountChecker_DTO accountChecker_dto) {
-        return Customers_DAO.get_check(accountChecker_dto.getCustomerIdetification());
+        return CustomersDao.get_check(accountChecker_dto.getCustomerIdetification());
     }
 
     private boolean isInValidModeAccess(AccountChecker_DTO accountChecker_dto, int mode_flag) {

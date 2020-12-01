@@ -3,7 +3,7 @@ package Controller;
 import javax.swing.JOptionPane;
 
 import Model.AccountChecker_DTO;
-import Model.Customers_DAO;
+import Model.CustomersDao;
 
 /*
  * View\LoginView.java에서 달아준 이벤트 리스너가 
@@ -11,7 +11,7 @@ import Model.Customers_DAO;
  * */
 public class C_login implements I_Login{
 	//Customers_DAO 싱글톤 객체를 불러옴.
-	Customers_DAO dao = Customers_DAO.getInstance();
+	CustomersDao dao = CustomersDao.getInstance();
 	
 	@Override
 	public void Submit() {	}
