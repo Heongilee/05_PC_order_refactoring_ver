@@ -26,7 +26,7 @@ public class C_UserView implements I_UserView{
 	private static Product_DAO dao = Product_DAO.getInstance();
 	private static OrdersDao ordersDao = OrdersDao.getInstance();
 	private static CustomersDao _customersDao = CustomersDao.getInstance();
-	private static GUIView GU = GUIView.getInstance();
+	private static GUIView _guiView = GUIView.getInstance();
 	private static LoginView _loginView = LoginView.getInstance();
 	private static Vector<OrdersDto> _orderList = PCController.orderList;
 	
@@ -39,43 +39,43 @@ public class C_UserView implements I_UserView{
 		DefaultListModel<Product_DTO> listModel;
 		switch(type) {
 		case 0:
-			GU.menuList = ordersDao.SQL_BEST3();
+			_guiView.menuList = ordersDao.SQL_BEST3();
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int j=0;j<GU.menuList.size();j++)
-				listModel.addElement(GU.menuList.get(j));
-			GU.JList_ProdType.setModel(listModel);
+			for(int j=0;j<_guiView.menuList.size();j++)
+				listModel.addElement(_guiView.menuList.get(j));
+			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 1:
-			GU.menuList = dao.USERVIEW_FUNC1(GU.ca[1]);
+			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[1]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<GU.menuList.size();i++) {
-				listModel.addElement(GU.menuList.get(i));
+			for(int i=0;i<_guiView.menuList.size();i++) {
+				listModel.addElement(_guiView.menuList.get(i));
 			}
-			GU.JList_ProdType.setModel(listModel);
+			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 2:
-			GU.menuList = dao.USERVIEW_FUNC1(GU.ca[2]);
+			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[2]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<GU.menuList.size();i++) {
-				listModel.addElement(GU.menuList.get(i));
+			for(int i=0;i<_guiView.menuList.size();i++) {
+				listModel.addElement(_guiView.menuList.get(i));
 			}
-			GU.JList_ProdType.setModel(listModel);
+			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 3:
-			GU.menuList = dao.USERVIEW_FUNC1(GU.ca[3]);
+			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[3]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<GU.menuList.size();i++) {
-				listModel.addElement(GU.menuList.get(i));
+			for(int i=0;i<_guiView.menuList.size();i++) {
+				listModel.addElement(_guiView.menuList.get(i));
 			}
-			GU.JList_ProdType.setModel(listModel);
+			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 4:
-			GU.menuList = dao.USERVIEW_FUNC1(GU.ca[4]);
+			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[4]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<GU.menuList.size();i++) {
-				listModel.addElement(GU.menuList.get(i));
+			for(int i=0;i<_guiView.menuList.size();i++) {
+				listModel.addElement(_guiView.menuList.get(i));
 			}
-			GU.JList_ProdType.setModel(listModel);
+			_guiView.JList_ProdType.setModel(listModel);
 			break;
 			default:
 				break;
@@ -85,7 +85,7 @@ public class C_UserView implements I_UserView{
 	//JList의 상품을 주문목록에 추가시키기.
 	@Override
 	public OrdersDto Add_Orderlog() {
-		Product_DTO dto = GU.JList_ProdType.getSelectedValue();
+		Product_DTO dto = _guiView.JList_ProdType.getSelectedValue();
 		OrdersDto res;
 		String cNAME = LoginView.getInstance().loginTextField.getText();
 		String pNAME = dto.getpNAME();
@@ -100,7 +100,7 @@ public class C_UserView implements I_UserView{
 	@Override
 	public Boolean Submit_Order() {
 		Boolean orderFlag = false;
-		int price = Integer.parseInt(GU.order_sum_label.getText());//합계를 가져오는 것
+		int price = Integer.parseInt(_guiView.orderSumLabel.getText());//합계를 가져오는 것
 		
 		//* CustomersDto 에 담기
 		CustomersDtoBuilder customersDtoBuilder = new CustomersDtoBuilder();
@@ -120,7 +120,7 @@ public class C_UserView implements I_UserView{
 			customersDto.setCustomerBalance(customersDto.getCustomerBalance() - price);
 			_customersDao.updateUserBalance(customersDto);
 			showNotificationMessage(customersDto.getCustomerId() + "님, 결제가 완료되었습니다.");
-			renewCustomerPoints(customersDto.getCustomerBalance());			
+			renewCustomerPoints(customersDto.getCustomerBalance());
 			for(int i=0;i<_orderList.size();i++){
 				OrdersDto ordersDto = _orderList.get(i);
 				
@@ -153,10 +153,10 @@ public class C_UserView implements I_UserView{
 	}
 
 	private void renewCustomerPoints(Integer customerBalance) {
-		GU.la[2].setText("포인트 : " + customerBalance.toString());
-		GU.ta1.setText("");
-		GU.order_sum = 0;
-		GU.order_sum_label.setText(String.valueOf(GU.order_sum));
+		_guiView.la[2].setText("포인트 : " + customerBalance.toString());
+		_guiView.ta1.setText("");
+		_guiView.order_sum = 0;
+		_guiView.orderSumLabel.setText(String.valueOf(_guiView.order_sum));
 		return ;
 	}
 
@@ -167,7 +167,7 @@ public class C_UserView implements I_UserView{
 	}
 
 	private void showNotificationMessage(String message) {
-		GU.mess.setText(message);
+		_guiView.mess.setText(message);
 
 		return;
 	}

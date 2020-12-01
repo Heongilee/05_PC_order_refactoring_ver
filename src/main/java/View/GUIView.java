@@ -66,7 +66,7 @@ public class GUIView extends JPanel {
 	public JTextArea ta1 = new JTextArea();// 가운데 센터 텍스트
 	public JLabel tf1 = new JLabel("합계  ");// 합계 텍스트 필드
 	public int order_sum = 0;
-	public JLabel order_sum_label = new JLabel(Integer.toString(order_sum));
+	public JLabel orderSumLabel = new JLabel(Integer.toString(order_sum));
 
 	public JButton sumb = new JButton("결제");
 	JPanel ep4 = new JPanel();// 오른쪽 채팅 패널
@@ -234,7 +234,7 @@ public class GUIView extends JPanel {
 		crp2.add(ta1, BorderLayout.CENTER);
 		crp2.add(crp3, BorderLayout.SOUTH);
 		crp3.add(tf1);
-		crp3.add(order_sum_label);
+		crp3.add(orderSumLabel);
 
 		sumb.setBackground(Color.black);
 		sumb.setFont(new Font("고딕체", Font.PLAIN, 10));

@@ -100,7 +100,7 @@ public class OrdersDao implements DAO_Interface{
 					// ----------------------	주문목록에 디스플레이	---------------------------
 					GUIView.getInstance().ta1.append(str);
 					GUIView.getInstance().order_sum += cnt * dto.getpPrice();
-					GUIView.getInstance().order_sum_label.setText(String.valueOf(GUIView.getInstance().order_sum));
+					GUIView.getInstance().orderSumLabel.setText(String.valueOf(GUIView.getInstance().order_sum));
 			}
 			else { // Cancel을 눌렀을 경우.
 				JOptionPane.showMessageDialog(null, "상품 갯수는 반드시 입력되어야 합니다.", "ERROR", JOptionPane.ERROR_MESSAGE);
