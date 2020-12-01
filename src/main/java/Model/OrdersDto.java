@@ -1,7 +1,7 @@
 package Model;
 
 //ORDERS 테이블에 SQL문을 사용하여 해당 레코드들을 가져와 담을 DTO 클래스.
-public class Orders_DTO {
+public class OrdersDto {
 	private String cNAME;
 	private String pNAME;
 	private int oCNT;
@@ -30,7 +30,7 @@ public class Orders_DTO {
 		this.oCNT = oCNT;
 	}
 
-	public Orders_DTO(String cNAME, String pNAME, int oCNT) {
+	public OrdersDto(String cNAME, String pNAME, int oCNT) {
 		super();
 		this.cNAME = cNAME;
 		this.pNAME = pNAME;

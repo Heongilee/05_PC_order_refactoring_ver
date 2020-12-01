@@ -6,8 +6,9 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import Model.Customer_DTO;
-import Model.Customers_DAO;
+import Model.CustomersDto;
+import Model.CustomersDtoBuilder;
+import Model.CustomersDao;
 import View.LoginView;
 import View.SignUpView;
 /*
@@ -16,7 +17,11 @@ import View.SignUpView;
  * */
 public class C_SignUp implements I_Register {
 	//싱글톤 객체를 불러옴.
-	Customers_DAO dao = Customers_DAO.getInstance();
+	CustomersDao dao = CustomersDao.getInstance();
+
+	// 참조객체 
+	private static LoginView _loginView = LoginView.getInstance();
+	private static SignUpView _signUpView = SignUpView.getInstance();
 	
 	//회원가입 양식에 맞게 유효성을 체크한다.
 	@Override
@@ -71,14 +76,23 @@ public class C_SignUp implements I_Register {
 	//회원가입이 완료되면 필드에 작성된 값들을 dto객체에 담아 CUSTOMERS테이블에 튜플삽입을 진행한다.
 	@Override
 	public void Register_Complete() throws SQLException {
-		Customer_DTO dto = new Customer_DTO(LoginView.getInstance().signUpView.IdField.getText(),
-				LoginView.getInstance().signUpView.PassField.getText(),
-				LoginView.getInstance().signUpView.NameField.getText(),
-				LoginView.getInstance().signUpView.EmailField.getText());
+		CustomersDtoBuilder customersDtoBuilder = new CustomersDtoBuilder();
+		CustomersDto customersDto = customersDtoBuilder
+			.setCustomerId(_signUpView.IdField.getText())
+			.setCustomerPassword(_signUpView.PassField.getText())
+			.setCustomerNickName(_signUpView.NameField.getText())
+			.setCustomerEmail(_signUpView.EmailField.getText()).build();
 		
-		System.out.println("[1] : "+dto.toString());
+		//! This code has been depricated...
+		/*CustomersDto dto = new CustomersDto(LoginView.getInstance().signUpView.IdField.getText(),
+		LoginView.getInstance().signUpView.PassField.getText(),
+		LoginView.getInstance().signUpView.NameField.getText(),
+		LoginView.getInstance().signUpView.EmailField.getText());
+		*/
 		
-		dao.CUSTOMERS_FUNC1(dto);
+		System.out.println("[1] : "+customersDto.toString());
+		
+		dao.CUSTOMERS_FUNC1(customersDto);
 		dao.Renewal_cID();		//테이블 관리번호 갱신하는 함수.
 	}
 }

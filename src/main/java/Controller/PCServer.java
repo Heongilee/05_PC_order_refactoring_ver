@@ -12,8 +12,8 @@ import java.util.Vector;
 import java.util.logging.Logger;
 import com.google.gson.Gson;
 import Model.Message;
-import Model.Orders_DAO;
-import Model.Orders_DTO;
+import Model.OrdersDao;
+import Model.OrdersDto;
 
 public class PCServer {
    // 서버 소켓 및 클라이언트 연결 소켓
@@ -28,8 +28,8 @@ public class PCServer {
 
    Map<String,String> current_count;
    
-   public static Orders_DAO o_dao;
-   public static Vector<Orders_DTO> PCorder_list = new Vector<Orders_DTO>();
+   public static OrdersDao o_dao;
+   public static Vector<OrdersDto> PCorder_list = new Vector<OrdersDto>();
    
    public void start() {
       logger = Logger.getLogger(this.getClass().getName());

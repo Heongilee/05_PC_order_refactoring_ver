@@ -17,8 +17,8 @@ import View.GUIView;
 import View.LoginView;
 
 //DB의 ORDERS 테이블에 접근하기 위한 DAO 클래스
-public class Orders_DAO implements DAO_Interface{
-	private static Orders_DAO dao;
+public class OrdersDao implements DAO_Interface{
+	private static OrdersDao dao;
 	private static GUIView GU = GUIView.getInstance();
 	public static Connection conn;
 	public static PreparedStatement pstmt;
@@ -74,12 +74,12 @@ public class Orders_DAO implements DAO_Interface{
 		}
 	}
 	//3. 외부의 인스턴스화를 막는다.
-	private Orders_DAO() {}
+	private OrdersDao() {}
 	
 	//4. Customers_DAO의 인스턴스를 얻는 방법은 getInstance() 하나 뿐이다.
-	public static Orders_DAO getInstance() {
+	public static OrdersDao getInstance() {
 		if(dao == null) {
-			dao = new Orders_DAO();
+			dao = new OrdersDao();
 		}
 		return dao;
 	}
@@ -134,7 +134,7 @@ public class Orders_DAO implements DAO_Interface{
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
-			Orders_DAO.closeJDBC(conn, pstmt, pstmt, rs);
+			OrdersDao.closeJDBC(conn, pstmt, pstmt, rs);
 		}
 		
 		return;
@@ -171,7 +171,7 @@ public class Orders_DAO implements DAO_Interface{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			Customers_DAO.closeJDBC(conn, pstmt, pstmt, rs);
+			CustomersDao.closeJDBC(conn, pstmt, pstmt, rs);
 		}
 		
 		return menu;
@@ -194,7 +194,7 @@ public class Orders_DAO implements DAO_Interface{
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		} finally {
-			Orders_DAO.closeJDBC(conn, pstmt, pstmt, rs);
+			OrdersDao.closeJDBC(conn, pstmt, pstmt, rs);
 		}
 		
 		return dto;
@@ -208,9 +208,9 @@ public class Orders_DAO implements DAO_Interface{
 			conn = getConnection();
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql);
-			Orders_DTO dto;
+			OrdersDto dto;
 			while(rs.next()) {
-				dto = new Orders_DTO(rs.getString(2), rs.getString(3), rs.getInt(4));
+				dto = new OrdersDto(rs.getString(2), rs.getString(3), rs.getInt(4));
 				
 				PCServer.PCorder_list.add(dto);
 			}
@@ -219,7 +219,7 @@ public class Orders_DAO implements DAO_Interface{
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		} finally {
-			Orders_DAO.closeJDBC(conn, pstmt, pstmt, rs);
+			OrdersDao.closeJDBC(conn, pstmt, pstmt, rs);
 		}
 		
 		return;

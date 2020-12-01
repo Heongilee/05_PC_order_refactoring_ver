@@ -7,7 +7,7 @@ import Controller.C_SignUp;
 import Controller.C_UserView;
 import Controller.C_login;
 import Controller.PCController;
-import Model.Customers_DAO;
+import Model.CustomersDao;
 import Model.PCChatData;
 import Model.ViewState;
 import View.AdminView;
@@ -21,7 +21,7 @@ import View.SignUpView;
 public class App 
 {
 	public static PCController app;
-	public static Customers_DAO dao;
+	public static CustomersDao dao;
 	public static void main(String[] args) {
 		System.out.println("App.java에서 프로그램을 시작합니다...");
 		
@@ -49,7 +49,7 @@ public class App
 								new PCChatData()
 								);
 		//고객 DAO객체 생성
-		dao = Customers_DAO.getInstance();
+		dao = CustomersDao.getInstance();
 
 		// viewState 활성화
 		ViewState.getInstance();
