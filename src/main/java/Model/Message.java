@@ -69,4 +69,6 @@ public class Message {
       return "Message [id=" + id + ", password=" + password + ", type=" + type + ", msg=" + msg + "]";
    }
    
+   
+   
 }

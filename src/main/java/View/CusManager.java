@@ -9,8 +9,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -26,7 +24,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 //로그인 뷰 -> 관리자 뷰 -> 고객관리 뷰 (싱글톤 패턴)
-public class CusManager extends JPanel {
+public class CusManager extends JFrame {
 	private static CusManager CM = new CusManager();
 	private static Container c;
 	JLabel title = new JLabel("고객관리");
@@ -45,44 +43,42 @@ public class CusManager extends JPanel {
 	public SeatPanel SP = new SeatPanel();
 	public ChatPanel CP = new ChatPanel();
 
-	// JToolBar bar = new JToolBar();
-	// public JButton previousBtn = new JButton("< 이전");
-	// public JButton logoutBtn = new JButton("로그아웃");
+	JToolBar bar = new JToolBar();
+	public JButton previousBtn = new JButton("< 이전");
+	public JButton logoutBtn = new JButton("로그아웃");
 
 	public boolean loginFlag = false;
 	public String id = "관리자";
 
 	private CusManager() {
-		// super("고객관리");
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		super("고객관리");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// // 툴바 interface
-		// bar.add(previousBtn);
-		// bar.addSeparator(new Dimension(750, 30));
-		// bar.add(logoutBtn);
-		// add(bar, BorderLayout.NORTH);
+		// 툴바 interface
+		bar.add(previousBtn);
+		bar.addSeparator(new Dimension(750, 30));
+		bar.add(logoutBtn);
+		add(bar, BorderLayout.NORTH);
 
 		JLayeredPane layeredpane = new JLayeredPane();
 		layeredpane.setBounds(0, 0, 700, 600);
 		layeredpane.setLayout(null);
 
 		layeredpane.setLayout(new GridLayout(1, 2));
-		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-		title.setFont(new Font("고딕체", Font.BOLD, 38));
 
+		leftPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 40));
+		title.setFont(new Font("고딕체", Font.BOLD, 38));
 		leftPanel.add(title);
-		leftPanel.add(Box.createVerticalStrut(50));
 		leftPanel.add(SP);
-		leftPanel.add(Box.createVerticalStrut(10));
 		layeredpane.add(leftPanel);
 
 		rightPanel.add(CP);
 		layeredpane.add(rightPanel);
 		add(layeredpane);
 		setSize(900, 700);
-		// LV.setLocationRelativeTo(null);
+		setLocationRelativeTo(null);
 		// 크기 고정
-		// LV.setResizable(false);
+		super.setResizable(false);
 
 		setVisible(false);
 //		chatInput.addActionListener(new ActionListener() {
@@ -165,7 +161,7 @@ public class CusManager extends JPanel {
 
 	public void addButtonActionListener(ActionListener listener) {
 		chatInput.addActionListener(listener);
-		// previousBtn.addActionListener(listener);
-		// logoutBtn.addActionListener(listener);
+		previousBtn.addActionListener(listener);
+		logoutBtn.addActionListener(listener);
 	}
 }

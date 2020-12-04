@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 //로그인 뷰 -> 관리자 뷰 -> 상품관리 뷰 (싱글톤 패턴)
-public class ProdManager extends JPanel {
+public class ProdManager extends JFrame {
 	public static ProdManager PM = ProdManager.getInstance();
 	LoginView LV = LoginView.getInstance();
 	JLabel title = new JLabel("상품관리");
@@ -47,20 +47,20 @@ public class ProdManager extends JPanel {
 	private ProductPanel PP = new ProductPanel();
 	private ShowPanel SP = new ShowPanel();
 
-	// JToolBar bar = new JToolBar();
-	// public JButton previousBtn = new JButton("< 이전");
-	// public JButton logoutBtn = new JButton("로그아웃");
+	JToolBar bar = new JToolBar();
+	public JButton previousBtn = new JButton("< 이전");
+	public JButton logoutBtn = new JButton("로그아웃");
 	
 	private ProdManager() {
-		// super("상품관리");
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		super("상품관리");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 
-		// // 툴바 interface
-		// bar.add(previousBtn);
-		// bar.addSeparator(new Dimension(750, 30));
-		// bar.add(logoutBtn);
-		// add(bar, BorderLayout.NORTH);
+		// 툴바 interface
+		bar.add(previousBtn);
+		bar.addSeparator(new Dimension(750, 30));
+		bar.add(logoutBtn);
+		add(bar, BorderLayout.NORTH);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -95,7 +95,7 @@ public class ProdManager extends JPanel {
 		add(panel, BorderLayout.CENTER);
 		
 		setSize(900, 700);
-		// LV.setLocationRelativeTo(null);
+		setLocationRelativeTo(null);
 		// 크기 고정
         //setResizable(false);
         
@@ -157,8 +157,8 @@ public class ProdManager extends JPanel {
 	
 	//리스너 핸들러 연결 메소드
 	public void addButtonActionListener(ActionListener listener) {
-		// previousBtn.addActionListener(listener);
-		// logoutBtn.addActionListener(listener);
+		previousBtn.addActionListener(listener);
+		logoutBtn.addActionListener(listener);
 		for(int i=0;i<3;i++)
 			btn[i].addActionListener(listener);
 		prodCombo.addActionListener(listener);
