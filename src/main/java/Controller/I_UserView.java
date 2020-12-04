@@ -22,6 +22,3 @@ public interface I_UserView {
 	// Exception1. 	CUSTOMERS테이블에서 해당 고객의 cBALANCE(잔액)을 검사해
 	// 				결제 금액보다 잔액이 부족하면 결제 실패 메시지를 출력한다.
 }
-
-
-
