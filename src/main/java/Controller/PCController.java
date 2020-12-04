@@ -306,7 +306,6 @@ public class PCController implements Runnable {
                LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
             } else 
             */
-            // if (obj == PM.btn[0]) { // 등록
             if (obj == PM.crudButton[0]) { // 등록
                cp.insertion();
             } else if (obj == PM.crudButton[1]) { // 조회

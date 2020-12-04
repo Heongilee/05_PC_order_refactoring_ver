@@ -1,6 +1,6 @@
 package com.PCorder;
 
-import Controller.AccountChecker;
+// import Controller.AccountChecker;
 import Controller.C_AdminView;
 import Controller.C_ProdManager;
 import Controller.C_SignUp;
@@ -36,7 +36,7 @@ public class App
 		GUIView guiView = GUIView.getInstance();
 		CusManager cusManager = CusManager.getInstance();
 		ProdManager prodManager = ProdManager.getInstance();
-		AccountChecker accountChecker = AccountChecker.getInstance();
+		// AccountChecker accountChecker = AccountChecker.getInstance();
 				
 		//컨트롤러 객체 생성
 		app = new PCController	(
