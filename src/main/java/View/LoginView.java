@@ -41,6 +41,7 @@ public class LoginView extends JFrame{
 	boolean flag;
 	public JRadioButton user = new JRadioButton("user MODE");
 	public JRadioButton server = new JRadioButton("server MODE");
+	//버튼 그룹 ( 버튼들을 묶음)
 	ButtonGroup goup = new ButtonGroup();
 	
 	public JToolBar bar = new JToolBar();
