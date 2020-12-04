@@ -95,7 +95,7 @@ public class Product_DAO implements DAO_Interface{
 				Product_DTO dto = new Product_DTO();
 				
 				String str = "";
-				PM.textArea.setText("관리번호\t상품명\t단가\t제조사\n");
+				PM.ta.setText("관리번호\t상품명\t단가\t제조사\n");
 				PM.prodCombo.removeAllItems();
 				PM.prodCombo.addItem("전체");	//"전체"
 				while(rs.next()) {
@@ -116,7 +116,7 @@ public class Product_DAO implements DAO_Interface{
 					PM.v.add(dto); //DTO 객체를 벡터에 추가.
 					PM.prodCombo.addItem(String.valueOf(dto.getpID()));
 				}
-				PM.textArea.append(str);
+				PM.ta.append(str);
 			}
 			else {
 				pstmt = conn.prepareStatement(sql2);

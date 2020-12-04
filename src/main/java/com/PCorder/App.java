@@ -36,13 +36,14 @@ public class App
 		GUIView guiView = GUIView.getInstance();
 		CusManager cusManager = CusManager.getInstance();
 		ProdManager prodManager = ProdManager.getInstance();
+		AdminView adminView = AdminView.getInstance();
 		// AccountChecker accountChecker = AccountChecker.getInstance();
 				
 		//컨트롤러 객체 생성
 		app = new PCController	(
 								loginView, cusManager, 
 								prodManager, guiView,
-								new AdminView(), signUpView,
+								adminView, signUpView,
 								new C_login(), new C_SignUp(),
 								new C_ProdManager(), new C_UserView(),
 								new C_AdminView(), new PCChatData(), 

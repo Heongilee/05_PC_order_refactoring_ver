@@ -21,68 +21,69 @@ import View.LoginView;
  * View\GUIView.java에서 달아준 이벤트 리스너가 
  * Controller\PCController.java에 있는 ActionPerformed를 받아 호출되는 메소드들.
  * */
-public class C_UserView implements I_UserView{
-	//싱글톤 객체를 불러옴.
-	private static Product_DAO dao = Product_DAO.getInstance();
-	private static OrdersDao ordersDao = OrdersDao.getInstance();
-	private static CustomersDao _customersDao = CustomersDao.getInstance();
-	private static GUIView _guiView = GUIView.getInstance();
-	// private static LoginView _loginView = LoginView.getInstance();
+public class C_UserView implements I_UserView {
+	// 싱글톤 객체를 불러옴.
+	Product_DAO _productDao = Product_DAO.getInstance();
+	OrdersDao _ordersDao = OrdersDao.getInstance();
+	CustomersDao _customersDao = CustomersDao.getInstance();
+	GUIView _guiView = GUIView.getInstance();
 	private static Vector<OrdersDto> _orderList = PCController.orderList;
-	
-	//PRODUCTS테이블에서 pTYPE속성에 맞는 항목들
-	//(0 : BEST3	1 : 라면류		2 : 음식류		3 : 간식류		4 : 과자류)을
+
+	public Vector<Product_DTO> menuList = new Vector<Product_DTO>();// 디비에서 가져온 메뉴 리스트
+
+	// PRODUCTS테이블에서 pTYPE속성에 맞는 항목들
+	// (0 : BEST3 1 : 라면류 2 : 음식류 3 : 간식류 4 : 과자류)을
 	// 불러와 JList에 뿌려준다.
 	@Override
 	public void Load_FoodCategory(int type) {
-		// 0 : BEST3	1 : 라면류		2 : 음식류		3 : 간식류		4 : 과자류
+		// 0 : BEST3 1 : 라면류 2 : 음식류 3 : 간식류 4 : 과자류
 		DefaultListModel<Product_DTO> listModel;
-		switch(type) {
+		switch (type) {
 		case 0:
-			_guiView.menuList = ordersDao.SQL_BEST3();
+			menuList = _ordersDao.SQL_BEST3();
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int j=0;j<_guiView.menuList.size();j++)
-				listModel.addElement(_guiView.menuList.get(j));
+			for (int j = 0; j < menuList.size(); j++)
+				listModel.addElement(menuList.get(j));
 			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 1:
-			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[1]);
+			menuList = _productDao.USERVIEW_FUNC1(_guiView.ca[1]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<_guiView.menuList.size();i++) {
-				listModel.addElement(_guiView.menuList.get(i));
+			for (int i = 0; i < menuList.size(); i++) {
+				listModel.addElement(menuList.get(i));
 			}
 			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 2:
-			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[2]);
+			menuList = _productDao.USERVIEW_FUNC1(_guiView.ca[2]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<_guiView.menuList.size();i++) {
-				listModel.addElement(_guiView.menuList.get(i));
+			for (int i = 0; i < menuList.size(); i++) {
+				listModel.addElement(menuList.get(i));
 			}
 			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 3:
-			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[3]);
+			menuList = _productDao.USERVIEW_FUNC1(_guiView.ca[3]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<_guiView.menuList.size();i++) {
-				listModel.addElement(_guiView.menuList.get(i));
+			for (int i = 0; i < menuList.size(); i++) {
+				listModel.addElement(menuList.get(i));
 			}
 			_guiView.JList_ProdType.setModel(listModel);
 			break;
 		case 4:
-			_guiView.menuList = dao.USERVIEW_FUNC1(_guiView.ca[4]);
+			menuList = _productDao.USERVIEW_FUNC1(_guiView.ca[4]);
 			listModel = new DefaultListModel<Product_DTO>();
-			for(int i=0;i<_guiView.menuList.size();i++) {
-				listModel.addElement(_guiView.menuList.get(i));
+			for (int i = 0; i < menuList.size(); i++) {
+				listModel.addElement(menuList.get(i));
 			}
 			_guiView.JList_ProdType.setModel(listModel);
 			break;
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 
-	//JList의 상품을 주문목록에 추가시키기.
+	// JList의 상품을 주문목록에 추가시키기.
 	@Override
 	public OrdersDto Add_Orderlog() {
 		Product_DTO dto = _guiView.JList_ProdType.getSelectedValue();
@@ -90,13 +91,13 @@ public class C_UserView implements I_UserView{
 		String cNAME = LoginView.getInstance().loginTextField.getText();
 		String pNAME = dto.getpNAME();
 		int oCNT;
-		oCNT = ordersDao.ORDERS_FUNC1(dto);		//주문 목록에 상품을 추가시키는 메소드.
-		
+		oCNT = _ordersDao.ORDERS_FUNC1(dto); // 주문 목록에 상품을 추가시키는 메소드.
+
 		res = new OrdersDto(cNAME, pNAME, oCNT);
 		return res;
 	}
 
-	//주문목록의 모든 상품들을 결제하는 메소드. (포인트가 부족하면 결제는 되지 않는다.)
+	// 주문목록의 모든 상품들을 결제하는 메소드. (포인트가 부족하면 결제는 되지 않는다.)
 	@Override
 	public Boolean Submit_Order() {
 		Boolean orderFlag = false;
@@ -125,10 +126,12 @@ public class C_UserView implements I_UserView{
 				OrdersDto ordersDto = _orderList.get(i);
 				
 				//벡터에 있는 주문 목록을 튜플에 삽입.
-				ordersDao.ORDERS_FUNC_1_1(ordersDto.getcNAME(), ordersDto.getpNAME(), ordersDto.getoCNT());
+				_ordersDao.ORDERS_FUNC_1_1(ordersDto.getcNAME(), ordersDto.getpNAME(), ordersDto.getoCNT());
 			}
+			PCController.orderList = _orderList;
 		} else {
 			showNotificationMessage(customersDto.getCustomerId() + "님, 포인트가 부족합니다.");
+			renewCustomerPoints(customersDto.getCustomerBalance());
 		}
 
 		//! This code has been depricated...
@@ -136,16 +139,19 @@ public class C_UserView implements I_UserView{
 			Order_Flag = true;
 			GU.mess.setText(LoginView.getInstance().loginTextField.getText() + "님, " + "결제가 되었습니다.");
 			System.out.println(point - value);
-			GU.la[2].setText("포인트 : " + Integer.toString(point-value));
-			
-			//-------------- (Controller\PCController.java)order_list 에 있는 모든 상품 목록들을 튜플에 삽입한다.
+			GU.la[2].setText("포인트 : " + Integer.toString(point - value));
+
+			// -------------- (Controller\PCController.java)order_list 에 있는 모든 상품 목록들을 튜플에
+			// 삽입한다.
 			Orders_DTO tmp;
-			for(int i=0;i<PCController.order_list.size();i++){
+			for (int i = 0; i < PCController.order_list.size(); i++) {
 				tmp = PCController.order_list.get(i);
-				
-				//벡터에 있는 주문 목록을 튜플에 삽입.
+
+				// 벡터에 있는 주문 목록을 튜플에 삽입.
 				dao2.ORDERS_FUNC_1_1(tmp.getcNAME(), tmp.getpNAME(), tmp.getoCNT());
 			}
+		} else {
+			GU.mess.setText("회원님, 포인트가 부족합니다.");
 		}
 		else {GU.mess.setText("회원님, 포인트가 부족합니다.");}
 		*/
@@ -155,8 +161,8 @@ public class C_UserView implements I_UserView{
 	private void renewCustomerPoints(Integer customerBalance) {
 		_guiView.la[2].setText("포인트 : " + customerBalance.toString());
 		_guiView.ta1.setText("");
-		_guiView.order_sum = 0;
-		_guiView.orderSumLabel.setText(String.valueOf(_guiView.order_sum));
+		_guiView.orderSum = 0;
+		_guiView.orderSumLabel.setText(String.valueOf(_guiView.orderSum));
 		return ;
 	}
 

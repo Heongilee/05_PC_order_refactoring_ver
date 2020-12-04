@@ -1,5 +1,8 @@
 package Controller;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -16,7 +19,16 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.google.gson.Gson;
 
@@ -93,7 +105,9 @@ public class PCController implements Runnable {
       this.cu = cu; // C_UserView 참조객체 연결
       this.ca = ca;   // C_AdminView 참조객체 연결
       this.CMchatData = CMchatData; // PCChatData 참조객체 연결
-      this.GUIchatData = GUIchatData; // PCChatData2 참조객체 연결
+	  this.GUIchatData = GUIchatData; // PCChatData2 참조객체 연결
+	  
+	  returnImage();
    }
 
    public void appMain() {
@@ -375,6 +389,51 @@ public class PCController implements Runnable {
        }
       });
    } // --------------------------- AppMain() 종료 -------------------------------
+	// 날씨 XML 데이터파싱
+	private static String getTagValue(String tag, Element eElement) {
+		NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
+		Node nValue = (Node) nlList.item(0);
+		if (nValue == null) {
+			return null;
+		}
+		return nValue.getNodeValue();
+	}
+
+	//날씨 데이터 DOM 파서
+	public void returnImage() {
+		try {
+			String url = "http://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=1121571000";
+
+			// 페이지에 접근해줄 Document객체 생성
+			DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
+			Document doc = dBuilder.parse(url);
+			doc.getDocumentElement().normalize();
+
+			// 파싱할 데이터의 tag에 접근
+			NodeList nList = doc.getElementsByTagName("data");
+			Node nNode = nList.item(0);// 인덱스 0인 데이터 즉 맨 앞에 있는 데이터를 가져옴
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element eElement = (Element) nNode;
+				String str = getTagValue("wfKor", eElement);
+				_guiView.weainfo[0] = new JLabel("지역: 서울특별시 광진구 화양동");
+				_guiView.weainfo[1] = new JLabel("현재 기온: " + getTagValue("temp", eElement) + " ºC");
+				_guiView.img = new ImageIcon("img/" + str + ".gif");
+				_guiView.weaimg = new JLabel(_guiView.img);
+				_guiView.weainfo[2] = new JLabel("현재 상태: " + str);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < 3; i++) {
+			_guiView.wea.add(_guiView.weainfo[i]);
+		}
+		//패널에 부착
+		_guiView.weather.add(_guiView.weaimg, BorderLayout.WEST);
+		_guiView.weather.add(_guiView.wea, BorderLayout.CENTER);
+		_guiView.weather.setBackground(Color.WHITE);
+		_guiView.weather.setPreferredSize(new Dimension(250, 0));
+	}
 
    public void connectServer() {
       try {
