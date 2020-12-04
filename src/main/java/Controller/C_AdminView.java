@@ -26,7 +26,7 @@ public class C_AdminView implements I_AdminView{
 		LV.setLocationRelativeTo(null);
 		LV.setResizable(false);		// 크기 고정
 		toolBar.setVisibleToolBar(true);
-		LV.logoutBtn.setVisible(true);
+		// LV.logoutBtn.setVisible(true);
 	}
 	
 	//상품관리 페이지로 이동한다.
@@ -37,7 +37,7 @@ public class C_AdminView implements I_AdminView{
 		LV.cardLayout.show(LV.window, "prodManager");
 		LV.setSize(900, 700);
 		toolBar.setVisibleToolBar(true);
-		LV.logoutBtn.setVisible(true);
+		// LV.logoutBtn.setVisible(true);
 	}
 	
 }
