@@ -306,11 +306,12 @@ public class PCController implements Runnable {
                LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
             } else 
             */
-            if (obj == PM.btn[0]) { // 등록
+            // if (obj == PM.btn[0]) { // 등록
+            if (obj == PM.crudButton[0]) { // 등록
                cp.insertion();
-            } else if (obj == PM.btn[1]) { // 조회
+            } else if (obj == PM.crudButton[1]) { // 조회
                cp.show();
-            } else if (obj == PM.btn[2]) { // 삭제
+            } else if (obj == PM.crudButton[2]) { // 삭제
                cp.deletion();
             } else {
             }
@@ -500,7 +501,7 @@ public class PCController implements Runnable {
             }
             
          } catch (IOException e) {
-            logger.log(Level.WARNING, "[MultiChatUI]메시지 스트림 종료!!");
+            logger.log(Level.WARNING, "[MultiChatUI]메시지 스트림 !!");
          }
       }
       logger.info("[MultiChatUI]" + thread.getName() + " 메시지 수신 스레드 종료됨!!");

@@ -49,7 +49,7 @@ public class AdminView extends JPanel {
 		pm_btn.setForeground(Color.WHITE);
 
 		title.setFont(new Font("고딕체", Font.BOLD, 29));
-		title.setForeground(Color.BLACK);
+		title.setForeground(Color.BLACK);	
 
 		cm_btn.setBounds(200, 200, 300, 60);
 		pm_btn.setBounds(200, 300, 300, 60);
