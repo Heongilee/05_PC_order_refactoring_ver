@@ -13,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 
 //로그인 뷰 -> 관리자 뷰
 public class AdminView extends JPanel {

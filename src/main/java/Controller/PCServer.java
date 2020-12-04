@@ -143,7 +143,7 @@ public class PCServer {
 	                  msgSendToCustomer(msg);
 	               } else if (checkMode("orderSendServer")){
 	                  /*주문 정보를 최신화하여 좌석 정보창에 뿌려주기 위해 DB에 있는 주문 정보를 가져와 주문 정보를 메시지로 보냅니다.*/
-	                   o_dao.getInstance().ORDERS_FUNC_2();
+	                   o_dao.ORDERS_FUNC_2();
 	                  
 	               String str = "";
 	               for (int i = 0; i < PCorder_list.size(); i++) {

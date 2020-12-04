@@ -1,8 +1,8 @@
 package Controller;
 import java.sql.SQLException;
 
-import javax.swing.JButton;
-import View.SignUpView;
+// import javax.swing.JButton;
+// import View.SignUpView;
 
 //C_SignUp.java에서 구현할 인터페이스
 public interface I_Register {

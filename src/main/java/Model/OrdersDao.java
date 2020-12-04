@@ -8,18 +8,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-import javax.swing.DefaultListModel;
+// import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
-import Controller.PCController;
 import Controller.PCServer;
 import View.GUIView;
-import View.LoginView;
+// import View.LoginView;
 
 //DB의 ORDERS 테이블에 접근하기 위한 DAO 클래스
 public class OrdersDao implements DAO_Interface{
 	private static OrdersDao dao;
-	private static GUIView GU = GUIView.getInstance();
+	// private static GUIView GU = GUIView.getInstance();
 	public static Connection conn;
 	public static PreparedStatement pstmt;
 	public static Statement stmt;
@@ -87,7 +86,7 @@ public class OrdersDao implements DAO_Interface{
 	// 주문목록에 상품을 추가시키는 메소드
 	public int ORDERS_FUNC1(Product_DTO dto) {
 		int cnt = 0;
-		String cNAME = LoginView.getInstance().loginTextField.getText();
+		// String cNAME = LoginView.getInstance().loginTextField.getText();
 		try {
 			String res = JOptionPane.showInputDialog(null, "개수를 입력하세요");
 			if(res != null) {
@@ -151,7 +150,7 @@ public class OrdersDao implements DAO_Interface{
 			rs = stmt.executeQuery(sql1);
 			int i;
 			Product_DTO dto;
-			DefaultListModel<Product_DTO> listModel;
+			// DefaultListModel<Product_DTO> listModel;
 			
 			for(i=0;(i<3) && (rs.next());i++) {
 				String prodName = rs.getString(1);

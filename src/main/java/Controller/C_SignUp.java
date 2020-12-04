@@ -2,9 +2,9 @@ package Controller;
 
 import java.sql.SQLException;
 
-import javax.swing.JButton;
+// import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+// import javax.swing.JTextField;
 
 import Model.CustomersDto;
 import Model.CustomersDtoBuilder;
@@ -20,7 +20,7 @@ public class C_SignUp implements I_Register {
 	CustomersDao dao = CustomersDao.getInstance();
 
 	// 참조객체 
-	private static LoginView _loginView = LoginView.getInstance();
+	// private static LoginView _loginView = LoginView.getInstance();
 	private static SignUpView _signUpView = SignUpView.getInstance();
 	
 	//회원가입 양식에 맞게 유효성을 체크한다.
