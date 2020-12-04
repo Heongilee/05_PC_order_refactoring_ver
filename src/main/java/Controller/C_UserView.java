@@ -1,11 +1,11 @@
 package Controller;
 
-import java.awt.Color;
-import java.sql.ResultSet;
+// import java.awt.Color;
+// import java.sql.ResultSet;
+// import javax.swing.ListModel;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
 
 import Model.CustomersDao;
 import Model.CustomersDto;
@@ -27,7 +27,7 @@ public class C_UserView implements I_UserView{
 	private static OrdersDao ordersDao = OrdersDao.getInstance();
 	private static CustomersDao _customersDao = CustomersDao.getInstance();
 	private static GUIView _guiView = GUIView.getInstance();
-	private static LoginView _loginView = LoginView.getInstance();
+	// private static LoginView _loginView = LoginView.getInstance();
 	private static Vector<OrdersDto> _orderList = PCController.orderList;
 	
 	//PRODUCTS테이블에서 pTYPE속성에 맞는 항목들
