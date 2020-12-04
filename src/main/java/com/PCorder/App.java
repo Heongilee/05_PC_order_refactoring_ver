@@ -34,7 +34,7 @@ public class App
 		app = new PCController	(
 								LoginView.getInstance(), CusManager.getInstance(), 
 								ProdManager.getInstance(), GUIView.getInstance(),
-								new AdminView(), new SignUpView(), 
+								AdminView.getInstance(), SignUpView.getInstance(), 
 								new C_login(), new C_SignUp(), 
 								new C_ProdManager(), new C_UserView(),
 								new C_AdminView(), new PCChatData(), 

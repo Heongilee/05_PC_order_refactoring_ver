@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
@@ -19,9 +20,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import View.AdminView;
-import View.SignUpView;
-
 //로그인 뷰 (싱글톤 패턴)
 public class LoginView extends JFrame{
 	private static LoginView LV = new LoginView();
@@ -33,14 +31,11 @@ public class LoginView extends JFrame{
 	BufferedImage img = null;
 	public JTextField loginTextField;			//아이디 필드
 	public JPasswordField passwordField;		//패스워드 필드
-	public JButton loginbt = new JButton("로그인");
-	public JButton SignUpbtn = new JButton("회원가입");
-	JLabel idlb;
-	JLabel passlb;
-	JLabel la;
+	public JButton loginbt;
+	public JButton SignUpbtn;
+	JLabel idlb, passlb, la;
 	boolean flag;
-	public JRadioButton user = new JRadioButton("user MODE");
-	public JRadioButton server = new JRadioButton("server MODE");
+	public JRadioButton user, server;
 	ButtonGroup goup = new ButtonGroup();
 	
 	public JToolBar bar = new JToolBar();
@@ -58,8 +53,6 @@ public class LoginView extends JFrame{
 		bar.add(previousBtn);
 		add(bar, BorderLayout.NORTH);
 		
-		goup.add(server);
-		goup.add(user);
 		Container c = getContentPane();
 
 		try {} catch (Exception e) {
@@ -67,74 +60,56 @@ public class LoginView extends JFrame{
 			System.exit(0);
 		}
 
+		//전체 틀
 		JLayeredPane layeredpane = new JLayeredPane();
 		layeredpane.setBounds(0, 0, 700, 600);
 		layeredpane.setLayout(null);
 
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 700, 600);
-
-		user.setFont(new Font("고딕체", Font.BOLD, 18));
-		user.setForeground(Color.BLACK);
-		user.setBounds(200, 50, 200, 30);
-
+		Rectangle rect = new Rectangle(200, 50, 200, 30);
+		//user 모드 라디오 버튼
+		user = makeRadio("User MODE", new Rectangle(200, 50, 200, 30), 18);
 		layeredpane.add(user);
 
-		server.setFont(new Font("고딕체", Font.BOLD, 18));
-		server.setForeground(Color.BLACK);
-		server.setBounds(400, 50, 200, 30);
-
+		//관리자 모드 라디오 버튼
+		server = makeRadio("Server MODE", new Rectangle(400, 50, 200, 30), 18);
 		layeredpane.add(server);
 
-		idlb = new JLabel("아이디");
-		idlb.setFont(new Font("고딕체", Font.BOLD, 18));
-		idlb.setForeground(Color.BLACK);
-		idlb.setBounds(100, 109, 100, 30);
+		//아이디 라벨
+		idlb = makeLabel("아이디", new Rectangle(100, 109, 100, 30), 18);
 		loginTextField = new JTextField(15);
 		loginTextField.setBounds(200, 109, 320, 30);
 
 		layeredpane.add(idlb);
 		layeredpane.add(loginTextField);
 
-		passlb = new JLabel("비밀번호");
-		passlb.setFont(new Font("고딕체", Font.BOLD, 18));
-		passlb.setForeground(Color.BLACK);
-		passlb.setBounds(100, 209, 100, 30);
+		//비밀번호 라벨
+		passlb = makeLabel("비밀번호", new Rectangle (100, 209, 100, 30), 18);
 		passwordField = new JPasswordField(15);
 		passwordField.setBounds(200, 209, 320, 30);
 
 		layeredpane.add(passlb);
 		layeredpane.add(passwordField);
 
-		loginbt.setBackground(Color.black);
-		loginbt.setFont(new Font("고딕체", Font.BOLD, 18));
-		loginbt.setForeground(Color.WHITE);
-		loginbt.setBounds(240, 300, 200, 48);
-
+		//로그인 버튼
+		loginbt = makeButton("로그인", new Rectangle(240, 300, 200, 48), 18);
 		layeredpane.add(loginbt);
 
-		la = new JLabel("or");
-		la.setBackground(Color.BLACK);
-		la.setFont(new Font("고딕체", Font.PLAIN, 23));
-		la.setForeground(Color.BLACK);
-		la.setBounds(330, 350, 200, 48);
-
+		//or 레이블
+		la = makeLabel("or", new Rectangle(330, 350, 200, 48), 23);
 		layeredpane.add(la);
 
-		SignUpbtn.setBackground(Color.black);
-		SignUpbtn.setFont(new Font("고딕체", Font.BOLD, 18));
-		SignUpbtn.setForeground(Color.WHITE);
-		SignUpbtn.setBounds(240, 400, 200, 48);
-
+		//회원가입 버튼
+		SignUpbtn = makeButton("회원가입", new Rectangle(240, 400, 200, 48), 18);
 		layeredpane.add(SignUpbtn);
 
-		layeredpane.add(panel);
+		//layeredpane.add(panel);
 
+		//만들었던 것을 다 올리고 카드레이 아웃으로 화면 전환 시켜준다
 		window = new JPanel();
 		cardLayout = new CardLayout();
 		window.setLayout(cardLayout);
-		adminView = new AdminView();
-		signUpView = new SignUpView();
+		adminView = AdminView.getInstance();
+		signUpView = SignUpView.getInstance();
 		window.add(layeredpane, "layer");
 		window.add(adminView, "admin");
 		window.add(signUpView, "signUp");
@@ -142,6 +117,41 @@ public class LoginView extends JFrame{
 		add(window);
 		setLocationRelativeTo(null);
 		setVisible(true);
+	}
+	
+	//레이블이 많아서 객체를 리턴 하도록 메소드 추출 적용
+	//임시변수 또한 그대로 사용되므로 임시변수 내용 직접삽입
+	public JLabel makeLabel(String str, Rectangle rect, int size) {
+		JLabel result;
+		result = new JLabel(str);
+		result.setFont(new Font("고딕체", Font.BOLD, size));
+		result.setForeground(Color.BLACK);
+		result.setBounds(rect.x, rect.y, rect.width, rect.height);
+		return result;
+	}
+	
+	//버튼 또한 2개 이상의 사용으로 메소드 추출을 통해 처리
+	//임시변수 또한 그대로 사용되므로 임시변수 내용 직접삽입
+	public JButton makeButton(String str, Rectangle rect, int size) {
+		JButton result;
+		result = new JButton(str);
+		result.setBackground(Color.black);
+		result.setFont(new Font("고딕체", Font.BOLD, size));
+		result.setForeground(Color.WHITE);
+		result.setBounds(rect.x, rect.y, rect.width, rect.height);
+		return result;
+	}
+	
+	//라디오 버튼 생성해서 그룹으로 묶는 것을 메소드 추출해서 처리
+	//임시변수 또한 그대로 사용되므로 임시변수 내용 직접삽입
+	public JRadioButton makeRadio(String str, Rectangle rect, int size) {
+		JRadioButton result;
+		result = new JRadioButton(str);
+		result.setFont(new Font("고딕체", Font.BOLD, size));
+		result.setForeground(Color.BLACK);
+		result.setBounds(rect.x, rect.y, rect.width, rect.height);
+		goup.add(result);
+		return result;
 	}
 	
 	//싱글톤 객체 접근 메소드.
@@ -152,6 +162,5 @@ public class LoginView extends JFrame{
 	public void addButtonActionListener(ActionListener listener) {
 		loginbt.addActionListener(listener);			//로그인 버튼
 		SignUpbtn.addActionListener(listener);			//회원가입 버튼
-		//previousBtn.addActionListener(listener);		//이전 버튼
 	}
 }
