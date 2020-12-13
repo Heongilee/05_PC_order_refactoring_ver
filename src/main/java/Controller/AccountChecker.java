@@ -1,7 +1,4 @@
 package Controller;
-
-// import java.util.Vector;
-
 import javax.swing.JOptionPane;
 
 import Model.AccountChecker_DTO;
@@ -28,7 +25,7 @@ public class AccountChecker {
     // 참조 객체 선언부
     public static CustomersDao _customerDao = CustomersDao.getInstance();
     public static LoginView _loginView = LoginView.getInstance();
-    public static C_login _loginController = PCController.cl;
+    public static C_login _loginController = PCController._loginController;
 
     // Accessor & Mutator
     public void gotoNextLevel() {
@@ -60,14 +57,14 @@ public class AccountChecker {
     }
 
     public void loadReferenceObjects() {
-        _loginController = PCController.cl;
+        _loginController = PCController._loginController;
         return;
     }
 
     public void runAccountChecker() {
         loadReferenceObjects();
 
-        int modeflagParameter = (_loginView.server.isSelected()) ? ADMIN : USER;
+        int modeflagParameter = (_loginView.admin.isSelected()) ? ADMIN : USER;
         AccountChecker_DTO accountCheckerDto = _loginController.stepIntoTryLogin(_loginView.loginTextField.getText(), _loginView.passwordField.getText(), modeflagParameter);
         for (int i = 0; i < LOGIN_SUCCESS; i++) {
             String errorMsg = isItValidationAccount(i, accountCheckerDto, _loginView.passwordField.getText(), modeflagParameter);

@@ -29,7 +29,7 @@ public class C_SignUp implements I_Register {
 		switch(f) {
 			case 0:	//아이디 중복 체크
 				try {
-					if(dao.Idselect(LoginView.getInstance().signUpView.IdField.getText())) {
+					if(dao.Idselect(_signUpView.identificationTextField.getText())) {
 						JOptionPane.showMessageDialog(null, "이미 사용중인 아이디입니다.");
 					}
 					else {
@@ -41,7 +41,7 @@ public class C_SignUp implements I_Register {
 				break;
 			case 1:	//닉네임 중복 체크
 				try {
-					if(dao.Nickselect(LoginView.getInstance().signUpView.NameField.getText())) {
+					if(dao.Nickselect(_signUpView.nameTextField.getText())) {
 						
 						JOptionPane.showMessageDialog(null, "이미 사용중인 닉네임입니다.");
 					}
@@ -56,7 +56,7 @@ public class C_SignUp implements I_Register {
 				break;
 			case 2:	//이메일 중복 체크
 				try {
-					if(dao.Emailselect(LoginView.getInstance().signUpView.EmailField.getText())) {
+					if(dao.Emailselect(_signUpView.emailTextField.getText())) {
 						
 						JOptionPane.showMessageDialog(null, "이미 사용중인 이메입니다.");
 					}
@@ -78,10 +78,10 @@ public class C_SignUp implements I_Register {
 	public void Register_Complete() throws SQLException {
 		CustomersDtoBuilder customersDtoBuilder = new CustomersDtoBuilder();
 		CustomersDto customersDto = customersDtoBuilder
-			.setCustomerId(_signUpView.IdField.getText())
-			.setCustomerPassword(_signUpView.PassField.getText())
-			.setCustomerNickName(_signUpView.NameField.getText())
-			.setCustomerEmail(_signUpView.EmailField.getText()).build();
+			.setCustomerId(_signUpView.identificationTextField.getText())
+			.setCustomerPassword(_signUpView.passwordTextField.getText())
+			.setCustomerNickName(_signUpView.nameTextField.getText())
+			.setCustomerEmail(_signUpView.emailTextField.getText()).build();
 		
 		//! This code has been depricated...
 		/*CustomersDto dto = new CustomersDto(LoginView.getInstance().signUpView.IdField.getText(),

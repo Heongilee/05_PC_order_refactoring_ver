@@ -19,8 +19,6 @@ public class C_AdminView implements I_AdminView{
 	//고객관리 페이지로 이동한다.
 	@Override
 	public void Goto_CustomerManager() {
-		// CM.setVisible(true);
-		// LV.setVisible(false);
 		LV.cardLayout.show(LV.window, "cusManager");
 		LV.setSize(900, 700);
 		LV.setLocationRelativeTo(null);

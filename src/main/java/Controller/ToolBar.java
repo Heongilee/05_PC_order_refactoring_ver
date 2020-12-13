@@ -55,10 +55,10 @@ public class ToolBar {
     }
 
     void clearSignupForm() {
-        _loginView.signUpView.IdField.setText("");
-        _loginView.signUpView.PassField.setText("");
-        _loginView.signUpView.NameField.setText("");
-        _loginView.signUpView.EmailField.setText("");
+        _signUpView.identificationTextField.setText("");
+        _signUpView.passwordTextField.setText("");
+        _signUpView.nameTextField.setText("");
+        _signUpView.emailTextField.setText("");
 
         return;
     }
@@ -189,6 +189,8 @@ public class ToolBar {
         _customerDao.make_check(_loginView.loginTextField.getText()); // DB 체크값을 바꿔준다.
         _loginView.cardLayout.show(_loginView.window, "layer");
         _loginView.setSize(700, 600);
+        clearAllOfLoginViewTextFields();
+        
         try {
             _outMsg.close();
             _inMsg.close();
@@ -200,5 +202,10 @@ public class ToolBar {
 
         PCController.status = _status = false;
         return;
+    }
+
+    private void clearAllOfLoginViewTextFields() {
+        _loginView.loginTextField.setText("");
+        _loginView.passwordField.setText("");
     }
 }

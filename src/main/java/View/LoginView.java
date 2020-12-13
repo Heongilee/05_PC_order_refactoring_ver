@@ -24,15 +24,15 @@ import javax.swing.JToolBar;
 //로그인 뷰 (싱글톤 패턴)
 public class LoginView extends JFrame{
 	// 카드레이아웃 뷰 
-	public SignUpView signUpView = SignUpView.getInstance();
-	public JLayeredPane layeredpane = new JLayeredPane();
-	public AdminView adminView = AdminView.getInstance();
-	public GUIView guiview = GUIView.getInstance();
-	public CusManager cusManager = CusManager.getInstance();
-	public ProdManager prodManager = ProdManager.getInstance();
+	private SignUpView _signUpView = SignUpView.getInstance();
+	private JLayeredPane _layeredpane = new JLayeredPane();
+	public AdminView _adminView = AdminView.getInstance();
+	private GUIView _guiview = GUIView.getInstance();
+	private CusManager _cusManager = CusManager.getInstance();
+	private ProdManager _prodManager = ProdManager.getInstance();
+	private static LoginView _loginView = new LoginView();
+	private GUIView _guiView = GUIView.getInstance();
 
-	private static LoginView LV = new LoginView();
-	public GUIView GUI = GUIView.getInstance();
 	public CardLayout cardLayout;
 	public JPanel window;
 	BufferedImage img = null;
@@ -40,9 +40,9 @@ public class LoginView extends JFrame{
 	public JPasswordField passwordField;		//패스워드 필드
 	public JButton loginbt;
 	public JButton SignUpbtn;
-	JLabel idlb, passlb, la;
+	JLabel identificationLabel, passwordLabel, orLabel;
 	boolean flag;
-	public JRadioButton user, server;
+	public JRadioButton user, admin;
 	ButtonGroup goup = new ButtonGroup();
 	
 	public JToolBar bar = new JToolBar();
@@ -81,23 +81,23 @@ public class LoginView extends JFrame{
 		layeredpane.add(user);
 
 		//관리자 모드 라디오 버튼
-		server = makeRadio("Admin MODE", new Rectangle(400, 50, 200, 30), 18);
-		layeredpane.add(server);
+		admin = makeRadio("Admin MODE", new Rectangle(400, 50, 200, 30), 18);
+		layeredpane.add(admin);
 
 		//아이디 라벨
-		idlb = makeLabel("아이디", new Rectangle(100, 109, 100, 30), 18);
+		identificationLabel = makeLabel("아이디", new Rectangle(100, 109, 100, 30), 18);
 		loginTextField = new JTextField(15);
 		loginTextField.setBounds(200, 109, 320, 30);
 
-		layeredpane.add(idlb);
+		layeredpane.add(identificationLabel);
 		layeredpane.add(loginTextField);
 
 		//비밀번호 라벨
-		passlb = makeLabel("비밀번호", new Rectangle (100, 209, 100, 30), 18);
+		passwordLabel = makeLabel("비밀번호", new Rectangle (100, 209, 100, 30), 18);
 		passwordField = new JPasswordField(15);
 		passwordField.setBounds(200, 209, 320, 30);
 
-		layeredpane.add(passlb);
+		layeredpane.add(passwordLabel);
 		layeredpane.add(passwordField);
 
 		//로그인 버튼
@@ -105,8 +105,8 @@ public class LoginView extends JFrame{
 		layeredpane.add(loginbt);
 
 		//or 레이블
-		la = makeLabel("or", new Rectangle(330, 350, 200, 48), 23);
-		layeredpane.add(la);
+		orLabel = makeLabel("or", new Rectangle(330, 350, 200, 48), 23);
+		layeredpane.add(orLabel);
 
 		//회원가입 버튼
 		SignUpbtn = makeButton("회원가입", new Rectangle(240, 400, 200, 48), 18);
@@ -119,11 +119,11 @@ public class LoginView extends JFrame{
 		cardLayout = new CardLayout();
 		window.setLayout(cardLayout);
 		window.add(layeredpane, "layer");
-		window.add(adminView, "admin");
-		window.add(signUpView, "signUp");
-		window.add(guiview, "guiView");
-		window.add(cusManager, "cusManager");
-		window.add(prodManager, "prodManager");
+		window.add(_adminView, "admin");
+		window.add(_signUpView, "signUp");
+		window.add(_guiview, "guiView");
+		window.add(_cusManager, "cusManager");
+		window.add(_prodManager, "prodManager");
 		
 		add(window);
 		setLocationRelativeTo(null);
@@ -166,8 +166,8 @@ public class LoginView extends JFrame{
 	}
 	
 	//싱글톤 객체 접근 메소드.
-	public static LoginView getInstance() {
-		return LV;
+	public static LoginView getInstance() { 
+		return _loginView;
 	}
 	
 	public void addButtonActionListener(ActionListener listener) {

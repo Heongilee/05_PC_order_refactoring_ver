@@ -95,9 +95,9 @@ public class Product_DAO implements DAO_Interface{
 				Product_DTO dto = new Product_DTO();
 				
 				String str = "";
-				PM.ta.setText("관리번호\t상품명\t단가\t제조사\n");
-				PM.prodCombo.removeAllItems();
-				PM.prodCombo.addItem("전체");	//"전체"
+				PM.productAttributes.setText("관리번호\t상품명\t단가\t제조사\n");
+				PM.productComboBox.removeAllItems();
+				PM.productComboBox.addItem("전체");	//"전체"
 				while(rs.next()) {
 					dto.setpID(rs.getInt(1));
 					str += String.valueOf(dto.getpID());
@@ -113,19 +113,19 @@ public class Product_DAO implements DAO_Interface{
 					str += dto.getpMANUF();
 					str += "\n";
 					
-					PM.v.add(dto); //DTO 객체를 벡터에 추가.
-					PM.prodCombo.addItem(String.valueOf(dto.getpID()));
+					PM.productVector.add(dto); //DTO 객체를 벡터에 추가.
+					PM.productComboBox.addItem(String.valueOf(dto.getpID()));
 				}
-				PM.ta.append(str);
+				PM.productAttributes.append(str);
 			}
 			else {
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, id);
 				rs = pstmt.executeQuery();
 				while(rs.next()) {
-					PM.prodtf[0].setText(rs.getString(1));
-					PM.prodtf[1].setText(String.valueOf(rs.getInt(2)));
-					PM.prodtf[2].setText(rs.getString(3));
+					PM.productTextFields[0].setText(rs.getString(1));
+					PM.productTextFields[1].setText(String.valueOf(rs.getInt(2)));
+					PM.productTextFields[2].setText(rs.getString(3));
 				}
 			}
 		} catch (SQLException e1) {
@@ -147,10 +147,10 @@ public class Product_DAO implements DAO_Interface{
 			conn = getConnection();
 			if(f == true) { // 삽입
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, PM.prodtf[0].getText());							// 제품 이름
-				pstmt.setInt(2, Integer.valueOf(PM.prodtf[1].getText()));			// 제품 가격
-				pstmt.setString(3, String.valueOf(PM.prodType.getSelectedItem()));	// 제품 타입
-				pstmt.setString(4, PM.prodtf[2].getText());							// 제품 제조사
+				pstmt.setString(1, PM.productTextFields[0].getText());							// 제품 이름
+				pstmt.setInt(2, Integer.valueOf(PM.productTextFields[1].getText()));			// 제품 가격
+				pstmt.setString(3, String.valueOf(PM.categories.getSelectedItem()));	// 제품 타입
+				pstmt.setString(4, PM.productTextFields[2].getText());							// 제품 제조사
 				int r = pstmt.executeUpdate();
 				
 				stmt = conn.createStatement();
@@ -159,19 +159,19 @@ public class Product_DAO implements DAO_Interface{
 				stmt.executeUpdate("UPDATE PRODUCTS SET PRODUCTS.pID = @CNT:=@CNT+1");
 				
 				if(r > 0) {
-					PM.stateText.setText("## 메시지 : 해당 제품의 삽입이 정상적으로 처리되었습니다.");
+					PM.noticeTextLabel.setText("## 메시지 : 해당 제품의 삽입이 정상적으로 처리되었습니다.");
 				}
 				else {
-					PM.stateText.setText("## 메시지 : 제품을 추가하는데 실패했습니다.");
+					PM.noticeTextLabel.setText("## 메시지 : 제품을 추가하는데 실패했습니다.");
 				}
 			}
 			else {			// 수정
 				pstmt = conn.prepareStatement(sql2);
-				System.out.println("[0] : "+PM.prodtf[0].getText()+", [1] : "+ PM.prodtf[1].getText() +", [2] : "+ PM.prodtf[2].getText());
-				pstmt.setString(1, PM.prodtf[0].getText());
-				pstmt.setInt(2, Integer.valueOf(PM.prodtf[1].getText()));
-				pstmt.setString(3, String.valueOf(PM.prodType.getSelectedItem()));
-				pstmt.setString(4, PM.prodtf[2].getText());
+				System.out.println("[0] : "+PM.productTextFields[0].getText()+", [1] : "+ PM.productTextFields[1].getText() +", [2] : "+ PM.productTextFields[2].getText());
+				pstmt.setString(1, PM.productTextFields[0].getText());
+				pstmt.setInt(2, Integer.valueOf(PM.productTextFields[1].getText()));
+				pstmt.setString(3, String.valueOf(PM.categories.getSelectedItem()));
+				pstmt.setString(4, PM.productTextFields[2].getText());
 				pstmt.setInt(5, id);
 				
 				stmt = conn.createStatement();
@@ -182,10 +182,10 @@ public class Product_DAO implements DAO_Interface{
 				int r = pstmt.executeUpdate();
 
 				if(r > 0) {
-					PM.stateText.setText("## 메시지 : 해당 제품의 수정이 정상적으로 처리되었습니다.");
+					PM.noticeTextLabel.setText("## 메시지 : 해당 제품의 수정이 정상적으로 처리되었습니다.");
 				}
 				else {
-					PM.stateText.setText("## 메시지 : 제품정보를 업데이트하는데 실패했습니다.");
+					PM.noticeTextLabel.setText("## 메시지 : 제품정보를 업데이트하는데 실패했습니다.");
 				}
 			}
 		} catch (SQLException e2) {
@@ -213,13 +213,13 @@ public class Product_DAO implements DAO_Interface{
 			stmt.executeUpdate("UPDATE PRODUCTS SET PRODUCTS.pID = @CNT:=@CNT+1");
 			
 			if(r > 0) {
-				PM.stateText.setText("## 메시지 : 해당 제품의 삭제가 정상적으로 처리되었습니다.");
+				PM.noticeTextLabel.setText("## 메시지 : 해당 제품의 삭제가 정상적으로 처리되었습니다.");
 			}
 			else {
-				PM.stateText.setText("## 메시지 : 해당 제품을 삭제하는데 실패했습니다.");
+				PM.noticeTextLabel.setText("## 메시지 : 해당 제품을 삭제하는데 실패했습니다.");
 			}
 		} catch(MySQLIntegrityConstraintViolationException e3){
-			PM.stateText.setText("## 메시지 : 이 상품을 주문한 고객이 있어 상품을 삭제할 수 없습니다.");
+			PM.noticeTextLabel.setText("## 메시지 : 이 상품을 주문한 고객이 있어 상품을 삭제할 수 없습니다.");
 		} catch (SQLException e2) {
 			e2.printStackTrace();
 		} catch(Exception e1) {

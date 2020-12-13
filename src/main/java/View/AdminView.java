@@ -16,20 +16,20 @@ import javax.swing.JPanel;
 
 //로그인 뷰 -> 관리자 뷰
 public class AdminView extends JPanel {
-	private static AdminView AV = new AdminView();
+	private static AdminView _adminView;
 	protected CardLayout cardLayout;
 	protected Container tab;
-	public JButton cm_btn,pm_btn;
-	private LoginPanel LP = new LoginPanel();
+	public JButton cmButton,pmButton;
+	// private LoginPanel _loginPanel = new LoginPanel();
 	JLabel title = new JLabel("Admin Mode");
-	private static Container c;
+	// private static Container c;
 	public JButton Previousbtn = new JButton("< 이전");
 	JButton LogOutbtn = new JButton("로그아웃");
 	
 	//각각의 싱글톤 객체 호출.
-	LoginView LV = LoginView.getInstance();
-	CusManager CM = CusManager.getInstance();
-	ProdManager PM = ProdManager.getInstance();
+	LoginView _loginView = LoginView.getInstance();
+	CusManager _cusManagerView = CusManager.getInstance();
+	ProdManager _prodManagerView = ProdManager.getInstance();
 	
 	private AdminView() {
 		JLayeredPane layeredpane = new JLayeredPane();
@@ -39,17 +39,17 @@ public class AdminView extends JPanel {
 		setLayout(new BorderLayout());
 
 		//고객관리 버튼 제작
-		cm_btn = makeButton("고객관리", "고객관리", new Rectangle(200, 200, 300, 60), 19);
+		cmButton = makeButton("고객관리", "고객관리", new Rectangle(200, 200, 300, 60), 19);
 
 		//상품관리 버튼 제작
-		pm_btn = makeButton("상품관리", "상품관리", new Rectangle(200, 300, 300, 60), 19);
+		pmButton = makeButton("상품관리", "상품관리", new Rectangle(200, 300, 300, 60), 19);
 
 		title.setFont(new Font("고딕체", Font.BOLD, 29));
 		title.setForeground(Color.BLACK);
 		title.setBounds(270, 100, 300, 60);
 
-		layeredpane.add(cm_btn);
-		layeredpane.add(pm_btn);
+		layeredpane.add(cmButton);
+		layeredpane.add(pmButton);
 		layeredpane.add(title);
 		
 		add(layeredpane);
@@ -72,7 +72,10 @@ public class AdminView extends JPanel {
 	
 	//싱글톤 객체 적용
 	public static AdminView getInstance() {
-		return AV;
+		if(_adminView == null) {
+			_adminView = new AdminView();
+		}
+		return _adminView;
 	}
 
 	public class LoginPanel extends JPanel {
@@ -83,8 +86,8 @@ public class AdminView extends JPanel {
 	
 	//리스너 핸들러 연결 메소드
 	public void addButtonActionListener(ActionListener listener) {
-		cm_btn.addActionListener(listener);
-		pm_btn.addActionListener(listener);
+		cmButton.addActionListener(listener);
+		pmButton.addActionListener(listener);
 		Previousbtn.addActionListener(listener);
 	}
 }

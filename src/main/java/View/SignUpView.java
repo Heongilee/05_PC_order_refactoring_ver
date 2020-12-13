@@ -13,45 +13,45 @@ import javax.swing.JTextField;
 
 //로그인 뷰 -> 회원가입 뷰
 public class SignUpView extends JPanel {
-	private static SignUpView SV = new SignUpView();
-	public LoginView LV = LoginView.getInstance();
-	public JPanel p = new JPanel();
-	public JLabel SignUpLabel, IdLabel, PassLabel, NameLabel, EmailLabel;
+	private static SignUpView _signUpView = new SignUpView();
+	public LoginView _loginView = LoginView.getInstance();
+	public JPanel signUpPanel = new JPanel();
+	public JLabel SignUpLabel, identificationLabel, passwordLabel, nameLabel, emailLabel;
 
 	// 회원가입 양식에 맞는 JTextField들.
-	public JTextField IdField, PassField, NameField, EmailField;
+	public JTextField identificationTextField, passwordTextField, nameTextField, emailTextField;
 
 	// 중복방지를 이벤트를 부르기 위한 중복확인 버튼.
-	public JButton btn, IdOverlapbtn, NameOverlapbtn, EmailOverlapbtn;
+	public JButton completeButton, duplicateMyIdentificationButton, duplicateMyNameButtion, duplicateMyEmailButton;
 
 	private SignUpView() {
 		setLayout(new BorderLayout());
 		// 레이블 제작, 삽입
 		SignUpLabel = makeLabel("회원가입", new Rectangle(300, 0, 130, 100), 30);
-		IdLabel = makeLabel("아이디", new Rectangle(70, 90, 100, 30), 18);
-		PassLabel = makeLabel("비밀번호", new Rectangle(70, 170, 100, 30), 18);
-		NameLabel = makeLabel("닉네임", new Rectangle(70, 250, 100, 30), 18);
-		EmailLabel = makeLabel("이메일", new Rectangle(70, 330, 100, 30), 18);
+		identificationLabel = makeLabel("아이디", new Rectangle(70, 90, 100, 30), 18);
+		passwordLabel = makeLabel("비밀번호", new Rectangle(70, 170, 100, 30), 18);
+		nameLabel = makeLabel("닉네임", new Rectangle(70, 250, 100, 30), 18);
+		emailLabel = makeLabel("이메일", new Rectangle(70, 330, 100, 30), 18);
 		
 		//텍스트 필드 생성
-		IdField = makeText(new Rectangle(170, 90, 250, 30));
-		PassField = makeText(new Rectangle(170, 170, 250, 30));
-		NameField = makeText(new Rectangle(170, 250, 250 ,30));
-		EmailField = makeText(new Rectangle(170, 330, 250, 30));
+		identificationTextField = makeText(new Rectangle(170, 90, 250, 30));
+		passwordTextField = makeText(new Rectangle(170, 170, 250, 30));
+		nameTextField = makeText(new Rectangle(170, 250, 250 ,30));
+		emailTextField = makeText(new Rectangle(170, 330, 250, 30));
 		
 		// 완료 버튼 위치, 크기 조절
-		btn = makeButton("완료", "btn", new Rectangle(200, 400, 300, 54), 19);
+		completeButton = makeButton("완료", "btn", new Rectangle(200, 400, 300, 54), 19);
 
 		// 아이디 중복확인 버튼 위치, 크기 조절
-		IdOverlapbtn = makeButton("중복확인", "IdOverlapbtn", new Rectangle(450, 90, 100, 30), 14);
+		duplicateMyIdentificationButton = makeButton("중복확인", "IdOverlapbtn", new Rectangle(450, 90, 100, 30), 14);
 
 		// 닉네임 중복확인 버튼 위치, 크기 조절
-		NameOverlapbtn = makeButton("중복확인", "NameOverlapbtn", new Rectangle(450, 250, 100, 30), 14);
+		duplicateMyNameButtion = makeButton("중복확인", "NameOverlapbtn", new Rectangle(450, 250, 100, 30), 14);
 
 		// 이메일 중복확인 버튼 위치, 크기 조절
-		EmailOverlapbtn = makeButton("중복확인", "EmailOverlapbtn", new Rectangle(450, 330, 100, 30), 14);
+		duplicateMyEmailButton = makeButton("중복확인", "EmailOverlapbtn", new Rectangle(450, 330, 100, 30), 14);
 
-		add(p);
+		add(signUpPanel);
 
 		setSize(700, 600);
 		setVisible(true);
@@ -94,14 +94,14 @@ public class SignUpView extends JPanel {
 	
 	//싱글톤 객체 리턴
 	public static SignUpView getInstance() {
-		return SV;
+		return _signUpView;
 	}
 
 	// 리스너 핸들러 연결 메소드
 	public void addButtonActionListener(ActionListener listener) {
-		IdOverlapbtn.addActionListener(listener);
-		NameOverlapbtn.addActionListener(listener);
-		EmailOverlapbtn.addActionListener(listener);
-		btn.addActionListener(listener); // 회원가입 제출 버튼.
+		duplicateMyIdentificationButton.addActionListener(listener);
+		duplicateMyNameButtion.addActionListener(listener);
+		duplicateMyEmailButton.addActionListener(listener);
+		completeButton.addActionListener(listener); // 회원가입 제출 버튼.
 	}
 }

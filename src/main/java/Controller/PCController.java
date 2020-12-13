@@ -47,34 +47,35 @@ import View.SignUpView;
 
 public class PCController implements Runnable {
    public final LoginView _loginView;
-   public final CusManager CM;
-   public final ProdManager PM;
+   public final CusManager _cusManagerView;
+   public final ProdManager _prodManagerView;
    public final GUIView _guiView;
-   public final AdminView AV;
-   public final SignUpView SUV;
-   public static C_login cl;
-   public final C_SignUp cs;
-   public final C_ProdManager cp;
-   public final C_UserView cu;
-   public final C_AdminView ca;
-   private final PCChatData CMchatData;
-   private final PCChatData GUIchatData;
+   public final AdminView _adminView;
+   public final SignUpView _signUpView;
+   public static C_login _loginController;
+   public final C_SignUp _signUpController;
+   public final C_ProdManager _prodManagerController;
+   public final C_UserView _userViewController;
+   public final C_AdminView _adminViewController;
+   private final PCChatData _pcChatData;
+   private final PCChatData _guiChatData;
    
    // 참조객체 선언.
    public static AccountChecker _accountChecker = AccountChecker.getInstance();
    public static CustomersDao _customerDao = CustomersDao.getInstance();
-   public static OrdersDao o_dao;
+   public static OrdersDao _ordersDao = OrdersDao.getInstance();
    public static ToolBar _toolBar = ToolBar.getInstance();
    public static ViewState _viewState = ViewState.getInstance();
 
    //Gson 객체 초기화
    public static Gson gson = new Gson();
    
-   // GUIView에서 JList에서 불러온 Product_DTO객체를 가지는 Vector
-   public static Vector<OrdersDto> orderList = new Vector<OrdersDto>();
+   //! This field has been depricated...   
+   //GUIView에서 JList에서 불러온 Product_DTO객체를 가지는 Vector
+   //public static Vector<OrdersDto> orderList = new Vector<OrdersDto>();
    
    // 메시지 클래스 참조 객체
-   Message gson_message;
+   Message gsonMessage;
    
    // 로거 객체
    Logger logger;
@@ -85,7 +86,7 @@ public class PCController implements Runnable {
    public static boolean status;
    Thread thread;
    
-   HashMap<String, String> current_temp;
+   HashMap<String, String> currentTemporary;
 
    public PCController(LoginView LV, CusManager CM, ProdManager PM, GUIView GUI, AdminView AV, SignUpView SUV,
          C_login cl, C_SignUp cs, C_ProdManager cp, C_UserView cu, C_AdminView ca, PCChatData CMchatData,
@@ -94,26 +95,26 @@ public class PCController implements Runnable {
       logger = Logger.getLogger(this.getClass().getName());
 
       this._loginView = LV; // LoginView 참조객체 연결
-      this.CM = CM; // CusManager 참조객체 연결
-      this.PM = PM; // ProdManager 참조객체 연결
+      this._cusManagerView = CM; // CusManager 참조객체 연결
+      this._prodManagerView = PM; // ProdManager 참조객체 연결
       this._guiView = GUI; // GUIView 참조객체 연결
-      this.AV = AV; // AdminView 참조객체 연결
-      this.SUV = SUV; // SignUpView 참조객체 연결
-      this.cl = cl; // C_login 참조객체 연결
-      this.cs = cs; // C_SignUp 참조객체 연결
-      this.cp = cp; // C_ProdManager 참조객체 연결
-      this.cu = cu; // C_UserView 참조객체 연결
-      this.ca = ca;   // C_AdminView 참조객체 연결
-      this.CMchatData = CMchatData; // PCChatData 참조객체 연결
-	  this.GUIchatData = GUIchatData; // PCChatData2 참조객체 연결
+      this._adminView = AV; // AdminView 참조객체 연결
+      this._signUpView = SUV; // SignUpView 참조객체 연결
+      this._loginController = cl; // C_login 참조객체 연결
+      this._signUpController = cs; // C_SignUp 참조객체 연결
+      this._prodManagerController = cp; // C_ProdManager 참조객체 연결
+      this._userViewController = cu; // C_UserView 참조객체 연결
+      this._adminViewController = ca;   // C_AdminView 참조객체 연결
+      this._pcChatData = CMchatData; // PCChatData 참조객체 연결
+	  this._guiChatData = GUIchatData; // PCChatData2 참조객체 연결
 	  
 	  returnImage();
    }
 
    public void appMain() {
       // 데이터 객체에서 데이터 변화를 처리할 UI 객체 추가, ta2는 TextArea이다.
-      CMchatData.addObjCus(CM.chatContent);
-      GUIchatData.addObjGUI(_guiView.ta2);
+      _pcChatData.addObjCus(_cusManagerView.chatContent);
+      _guiChatData.addObjGUI(_guiView.chattingTextArea);
 
       // 로그인 뷰 이벤트 처리
       _loginView.addButtonActionListener(new ActionListener() { // 로그인 뷰 레이아웃
@@ -125,14 +126,14 @@ public class PCController implements Runnable {
                _accountChecker.runAccountChecker();
                if(_accountChecker.getValidationPointer() == _accountChecker.LOGIN_SUCCESS){
                   // ------- 관리자로 로그인 성공! -------
-                  if(_loginView.server.isSelected()) {
+                  if(_loginView.admin.isSelected()) {
                      _customerDao.make_check(_loginView.loginTextField.getText());
                      
                      /*   화면 전환   */
                      _loginView.cardLayout.show(_loginView.window, "admin");
                      _toolBar.setVisibleToolBar(false);
                      _loginView.previousBtn.setVisible(true);
-                     CM.loginFlag = true;
+                     _cusManagerView.loginFlag = true;
 
                      /* 관리자 로그인 들어갔을 경우 이벤트 처리 */
                      connectServer();
@@ -153,8 +154,8 @@ public class PCController implements Runnable {
 
                      /* 사용자 로그인 들어갔을 경우 이벤트 처리 */
                      _guiView.id = _loginView.loginTextField.getText();
-                     _guiView.la[0].setText("아이디 : " + _guiView.id);
-                     _guiView.la[2].setText("포인트 : " + _customerDao.checkUserBalance(_guiView.id));
+                     _guiView.userInfoLabel[0].setText("아이디 : " + _guiView.id);
+                     _guiView.userInfoLabel[2].setText("포인트 : " + _customerDao.checkUserBalance(_guiView.id));
 
                      connectServer(); // 로그인 성공에 따른 클라이언트 스레드 생성.
 
@@ -204,16 +205,16 @@ public class PCController implements Runnable {
       });
 
       // 로그인 뷰->관리자 뷰 이벤트 처리
-      _loginView.adminView.addButtonActionListener(new ActionListener() { // 관리자 뷰 레이아웃
+      _loginView._adminView.addButtonActionListener(new ActionListener() { // 관리자 뷰 레이아웃
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
-            if (obj == _loginView.adminView.cm_btn) { // 관리자 뷰에서 고객관리 버튼을 눌렀을 경우
-               ca.Goto_CustomerManager();
+            if (obj == _loginView._adminView.cmButton) { // 관리자 뷰에서 고객관리 버튼을 눌렀을 경우
+               _adminViewController.Goto_CustomerManager();
                _viewState.setCurrent_view_state("CusManagerView");
                System.out.println(_viewState.getCurrentViewState());
-            } else if (obj == _loginView.adminView.pm_btn) { // 관리자 뷰에서 상품관리 버튼을 눌렀을 경우
-               ca.Goto_ProductManager();
+            } else if (obj == _loginView._adminView.pmButton) { // 관리자 뷰에서 상품관리 버튼을 눌렀을 경우
+               _adminViewController.Goto_ProductManager();
                _viewState.setCurrent_view_state("ProdManagerView");
                System.out.println(_viewState.getCurrentViewState());
             } 
@@ -221,21 +222,21 @@ public class PCController implements Runnable {
       });
 
       // 로그인 뷰->회원가입 뷰 이벤트 처리
-      SUV.addButtonActionListener(new ActionListener() {
+      _signUpView.addButtonActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
             JButton btn = (JButton) e.getSource();
 
             // SignUpView에서 setName한 값을 가지고 if-else문으로 분기조건을 주었다.
             if (btn.getName().equals("IdOverlapbtn")) {	//아이디 중복
-               cs.Valid_Check(0);
+               _signUpController.Valid_Check(0);
             } else if (btn.getName().equals("NameOverlapbtn")) { //닉네임 중복
-               cs.Valid_Check(1);
+               _signUpController.Valid_Check(1);
             } else if (btn.getName().equals("EmailOverlapbtn")) { //이메일 중복
-               cs.Valid_Check(2);
+               _signUpController.Valid_Check(2);
             } else { // 회원가입 완료 버튼 눌렀을 때
                try {
-                  cs.Register_Complete();
+                  _signUpController.Register_Complete();
                } catch (SQLException e1) {
                   e1.printStackTrace();
                } finally {
@@ -248,28 +249,28 @@ public class PCController implements Runnable {
       });
 
       // 고객 관리 뷰 이벤트 처리
-      CM.addButtonActionListener(new ActionListener() { // 고객관리 뷰
+      _cusManagerView.addButtonActionListener(new ActionListener() { // 고객관리 뷰
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
-            if (obj == CM.chatInput) { // 고객관리 뷰에서 채팅
-               if (CM.chatComboBox.getSelectedIndex() == 0) {
-                  System.out.println("qq " + CM.chatComboBox.getSelectedIndex());
+            if (obj == _cusManagerView.chatInput) { // 고객관리 뷰에서 채팅
+               if (_cusManagerView.chatComboBox.getSelectedIndex() == 0) {
+                  System.out.println("qq " + _cusManagerView.chatComboBox.getSelectedIndex());
                   outMsg.println(
-                        gson.toJson(new Message("카운터", CM.id, "", CM.chatInput.getText(), "ModeAll", "")));
-                  CM.chatInput.setText("");
+                        gson.toJson(new Message("카운터", _cusManagerView.id, "", _cusManagerView.chatInput.getText(), "ModeAll", "")));
+                  _cusManagerView.chatInput.setText("");
                } else {
-                  System.out.println("pp " + CM.chatComboBox.getSelectedIndex());
-                  String str = CM.chatComboBox.getItemAt(CM.chatComboBox.getSelectedIndex());
+                  System.out.println("pp " + _cusManagerView.chatComboBox.getSelectedIndex());
+                  String str = _cusManagerView.chatComboBox.getItemAt(_cusManagerView.chatComboBox.getSelectedIndex());
                   int index = 0;
-                  for (String key : current_temp.keySet()) {
+                  for (String key : currentTemporary.keySet()) {
                      index++;
-                     String value = current_temp.get(key);
+                     String value = currentTemporary.get(key);
                      String strTemp = value + ":" + key;
                      if (strTemp.equals(str)) {
                         outMsg.println(gson.toJson(
-                              new Message("카운터", CM.id, "", CM.chatInput.getText(), "ModeSelect", key)));
-                        CM.chatInput.setText("");
+                              new Message("카운터", _cusManagerView.id, "", _cusManagerView.chatInput.getText(), "ModeSelect", key)));
+                        _cusManagerView.chatInput.setText("");
                         break;
                      }
                   }
@@ -303,7 +304,7 @@ public class PCController implements Runnable {
       });
 
       // 상품 관리 이벤트 처리
-      PM.addButtonActionListener(new ActionListener() {
+      _prodManagerView.addButtonActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
             Object obj = e.getSource();
@@ -320,12 +321,12 @@ public class PCController implements Runnable {
                LV.getInstance().cardLayout.show(LV.getInstance().window, "layer");
             } else 
             */
-            if (obj == PM.crudButton[0]) { // 등록
-               cp.insertion();
-            } else if (obj == PM.crudButton[1]) { // 조회
-               cp.show();
-            } else if (obj == PM.crudButton[2]) { // 삭제
-               cp.deletion();
+            if (obj == _prodManagerView.crudButton[0]) { // 등록
+               _prodManagerController.insertion();
+            } else if (obj == _prodManagerView.crudButton[1]) { // 조회
+               _prodManagerController.show();
+            } else if (obj == _prodManagerView.crudButton[2]) { // 삭제
+               _prodManagerController.deletion();
             } else {
             }
          }
@@ -358,18 +359,18 @@ public class PCController implements Runnable {
                ///////////////////////////////////
                // ↓↓↓↓ 상품 목록 버튼 ↓↓↓↓
                ///////////////////////////////////
-            } else if (obj == _guiView.btn[0]) { // BEST 3
-               cu.Load_FoodCategory(0);
-            } else if (obj == _guiView.btn[1]) { // 라면류
-               cu.Load_FoodCategory(1);
-            } else if (obj == _guiView.btn[2]) { // 음료류
-               cu.Load_FoodCategory(2);
-            } else if (obj == _guiView.btn[3]) { // 간식류
-               cu.Load_FoodCategory(3);
-            } else if (obj == _guiView.btn[4]) { // 과자류
-               cu.Load_FoodCategory(4);
-            } else if (obj == _guiView.sumb) { // 결제 버튼
-               if(cu.Submit_Order()) {
+            } else if (obj == _guiView.categoryButtons[0]) { // BEST 3
+               _userViewController.Load_FoodCategory(0);
+            } else if (obj == _guiView.categoryButtons[1]) { // 라면류
+               _userViewController.Load_FoodCategory(1);
+            } else if (obj == _guiView.categoryButtons[2]) { // 음료류
+               _userViewController.Load_FoodCategory(2);
+            } else if (obj == _guiView.categoryButtons[3]) { // 간식류
+               _userViewController.Load_FoodCategory(3);
+            } else if (obj == _guiView.categoryButtons[4]) { // 과자류
+               _userViewController.Load_FoodCategory(4);
+            } else if (obj == _guiView.paymentButton) { // 결제 버튼
+               if(_userViewController.Submit_Order()) {
                   // 채팅 메시지로 사용자가 결제 완료 했다고 넣는 부분
             	   outMsg.println(gson.toJson(new Message(_guiView.seat, _guiView.id, "", "에서 결제하였습니다.", "orderSendServer", "")));
                }
@@ -384,8 +385,8 @@ public class PCController implements Runnable {
        public void mousePressed(MouseEvent e) {
             OrdersDto tmp;
             super.mousePressed(e);
-            tmp = cu.Add_Orderlog();
-            orderList.add(tmp);
+            tmp = _userViewController.Add_Orderlog();
+            _ordersDao.getOrderList().add(tmp);
        }
       });
    } // --------------------------- AppMain() 종료 -------------------------------
@@ -426,13 +427,13 @@ public class PCController implements Runnable {
 			e.printStackTrace();
 		}
 		for (int i = 0; i < 3; i++) {
-			_guiView.wea.add(_guiView.weainfo[i]);
+			_guiView.cityInfoLabel.add(_guiView.weainfo[i]);
 		}
 		//패널에 부착
-		_guiView.weather.add(_guiView.weaimg, BorderLayout.WEST);
-		_guiView.weather.add(_guiView.wea, BorderLayout.CENTER);
-		_guiView.weather.setBackground(Color.WHITE);
-		_guiView.weather.setPreferredSize(new Dimension(250, 0));
+		_guiView.weatherPanel.add(_guiView.weaimg, BorderLayout.WEST);
+		_guiView.weatherPanel.add(_guiView.cityInfoLabel, BorderLayout.CENTER);
+		_guiView.weatherPanel.setBackground(Color.WHITE);
+		_guiView.weatherPanel.setPreferredSize(new Dimension(250, 0));
 	}
 
    public void connectServer() {
@@ -446,14 +447,14 @@ public class PCController implements Runnable {
          outMsg = new PrintWriter(socket.getOutputStream(), true);
 
          // 서버에 로그인 메시지 전달
-         if (CM.loginFlag) {
+         if (_cusManagerView.loginFlag) {
            // 관리자가 로그인 했을 경우.
-            gson_message = new Message("카운터", CM.id, "", "", "adminlogin", "");
+            gsonMessage = new Message("카운터", _cusManagerView.id, "", "", "adminlogin", "");
          } else {
            // 사용자가 로그인 했을 경우
-            gson_message = new Message("0", _guiView.id, "", "", "login", "adminlogin");
+            gsonMessage = new Message("0", _guiView.id, "", "", "login", "adminlogin");
          }
-         outMsg.println(gson.toJson(gson_message));
+         outMsg.println(gson.toJson(gsonMessage));
 
          // 메시지 수신을 위한 스레드 생성
          thread = new Thread(this);
@@ -475,25 +476,25 @@ public class PCController implements Runnable {
             msg = inMsg.readLine();
             System.out.println(msg);
             Message m_temp = gson.fromJson(msg, Message.class);
-            if(m_temp.getType().equals("current_count") && gson_message.getId().equals("관리자"))
+            if(m_temp.getType().equals("current_count") && gsonMessage.getId().equals("관리자"))
             {
                /*관리자로 로그인시에 현재 접속중인 사용자들의 좌석과 아이디를 콤보박스에 최신화 합니다.*/
-               current_temp = new HashMap<String,String>();
-               current_temp.putAll(gson.fromJson(m_temp.getMsg(),HashMap.class));
+               currentTemporary = new HashMap<String,String>();
+               currentTemporary.putAll(gson.fromJson(m_temp.getMsg(),HashMap.class));
                
-               Set<String> set = current_temp.keySet();
+               Set<String> set = currentTemporary.keySet();
                for(String key : set)
                {
-                  String value = key + ":" + current_temp.get(key);
+                  String value = key + ":" + currentTemporary.get(key);
                   int i;
-                  for(i = 0 ; i < CM.chatComboBox.getItemCount();i++) {
-                     if(CM.chatComboBox.getItemAt(i).equals(value))
+                  for(i = 0 ; i < _cusManagerView.chatComboBox.getItemCount();i++) {
+                     if(_cusManagerView.chatComboBox.getItemAt(i).equals(value))
                      {
                         break;
                      }
                   }
-                  if(i == CM.chatComboBox.getItemCount()) {
-                     CM.chatComboBox.addItem(value);
+                  if(i == _cusManagerView.chatComboBox.getItemCount()) {
+                     _cusManagerView.chatComboBox.addItem(value);
                   }
                }
              }
@@ -501,19 +502,19 @@ public class PCController implements Runnable {
                /*주문한 유저의 좌석에 주문 정보를 뿌려 줍니다.*/
                String orderList = "";
                orderList = gson.fromJson(m_temp.getReceiveId(), String.class);
-               CM.SP.seatTextArea[(Integer.parseInt((String)m_temp.getSeat())-1)].append(orderList);
+               _cusManagerView.SP.seatTextArea[(Integer.parseInt((String)m_temp.getSeat())-1)].append(orderList);
             }
-            if(m_temp.getType().equals("user_login") &&gson_message.getId().equals("관리자"))
+            if(m_temp.getType().equals("user_login") &&gsonMessage.getId().equals("관리자"))
             {
                /*사용자 로그인시에 콤보박스에 방금 접속한 사용자의 좌석과 아이디를 추가합니다.*/
                String value = m_temp.getSeat()+":"+m_temp.getId();
-               current_temp.put(m_temp.getId(),m_temp.getSeat());
-               CM.chatComboBox.addItem(value);
+               currentTemporary.put(m_temp.getId(),m_temp.getSeat());
+               _cusManagerView.chatComboBox.addItem(value);
                /*고객 관리창 좌석에 방금 점속한 사용자의 좌석과 아이디를 뿌려 줍니다.*/
                int seat = Integer.parseInt(m_temp.getSeat())-1;
                for(int i=0 ;i<12; i++) {
                   if(Integer.toString(i).equals(Integer.toString(seat)))
-                     CM.SP.seatTextArea[i].setText(m_temp.getSeat() + ":" + m_temp.getId() + "\n");
+                     _cusManagerView.SP.seatTextArea[i].setText(m_temp.getSeat() + ":" + m_temp.getId() + "\n");
                }
             }
             if(m_temp.getType().equals("user_logout"))
@@ -521,41 +522,41 @@ public class PCController implements Runnable {
                /*사용자 로그아웃시 콤보박스에 나간 사용자를 지우고 콤보박스를 최신화 합니다.*/
                int[] customersSeat = new int[12];
                customersSeat = gson.fromJson(m_temp.getReceiveId(), int[].class);
-               CM.chatComboBox.removeAllItems();
-               CM.chatComboBox.addItem("전체");
+               _cusManagerView.chatComboBox.removeAllItems();
+               _cusManagerView.chatComboBox.addItem("전체");
                for(int i=0;i<12;i++) {
                   if(customersSeat[i] != 0) {
                      
-                     String comboStr = CM.SP.seatTextArea[i].getText();
+                     String comboStr = _cusManagerView.SP.seatTextArea[i].getText();
                      String comboId[] = comboStr.split("\n");
                      
-                     CM.chatComboBox.addItem(comboId[0]);
+                     _cusManagerView.chatComboBox.addItem(comboId[0]);
                   }
                   if(customersSeat[i] == 0) {
                      /*사용자 로그아웃시 좌석창에 나간 사용자 제외하고 좌석을 최신화 합니다.*/
-                     CM.SP.seatTextArea[i].setText("빈 자 리\n");
+                     _cusManagerView.SP.seatTextArea[i].setText("빈 자 리\n");
                   }
                }
             }
-            if(gson_message.getSeat() == "0" && _guiView.seat == "") {
+            if(gsonMessage.getSeat() == "0" && _guiView.seat == "") {
                /*사용자가 들어갈 좌석에 사용자가 없거나 맨 처음 사용자가 들어오는 상태이면 좌석 정보를 채워 놓습니다.*/
                /*나중에 사용자 좌석 정보를 사용자 로그인시와 로그아웃시 이용하기 위함입니다.*/
                _guiView.seat = m_temp.getSeat();
-               gson_message.setSeat(m_temp.getSeat());
+               gsonMessage.setSeat(m_temp.getSeat());
             }
             
-            if(CM.loginFlag)
+            if(_cusManagerView.loginFlag)
             {   
                // 관리자 창을 refresh 최신화 해줍니다.
-               CMchatData.refreshData(m_temp.getSeat() + " 좌석(" + m_temp.getId() + "):" + m_temp.getMsg() + "\n");
+               _pcChatData.refreshData(m_temp.getSeat() + " 좌석(" + m_temp.getId() + "):" + m_temp.getMsg() + "\n");
                // 커서를 현재 대화 메시지에 표시
-               CM.chatContent.setCaretPosition(CM.chatContent.getDocument().getLength());
+               _cusManagerView.chatContent.setCaretPosition(_cusManagerView.chatContent.getDocument().getLength());
             }
             else {
                // 사용자 창을 refresh 최신화 해줍니다.
-               GUIchatData.refreshData(m_temp.getSeat() + " 좌석(" + m_temp.getId() + "):" + m_temp.getMsg() + "\n");
+               _guiChatData.refreshData(m_temp.getSeat() + " 좌석(" + m_temp.getId() + "):" + m_temp.getMsg() + "\n");
                // 커서를 현재 대화 메시지에 표시
-               _guiView.ta2.setCaretPosition(_guiView.ta2.getDocument().getLength());
+               _guiView.chattingTextArea.setCaretPosition(_guiView.chattingTextArea.getDocument().getLength());
             }
             
          } catch (IOException e) {

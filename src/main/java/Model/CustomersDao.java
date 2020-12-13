@@ -13,6 +13,7 @@ public class CustomersDao implements DAO_Interface{
    //1. 바로 메모리 할당하는 방법을 사용.
    private static CustomersDao dao;
    private static LoginView LV = LoginView.getInstance();
+   private static SignUpView _signUpView = SignUpView.getInstance();
    public static Connection conn;
    public static PreparedStatement pstmt;
    public static Statement stmt;
@@ -108,10 +109,10 @@ public class CustomersDao implements DAO_Interface{
          LV.cardLayout.show(LV.window, "layer");
          
          /*	회원가입 뷰의 모든 필드값 초기화	*/
-         LV.signUpView.IdField.setText("");
-         LV.signUpView.PassField.setText("");
-         LV.signUpView.NameField.setText("");
-         LV.signUpView.EmailField.setText("");
+         _signUpView.identificationTextField.setText("");
+         _signUpView.passwordTextField.setText("");
+         _signUpView.nameTextField.setText("");
+         _signUpView.emailTextField.setText("");
       }
       
       return;

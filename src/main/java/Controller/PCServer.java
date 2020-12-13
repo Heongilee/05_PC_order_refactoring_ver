@@ -8,12 +8,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Logger;
 import com.google.gson.Gson;
 import Model.Message;
 import Model.OrdersDao;
-import Model.OrdersDto;
 
 public class PCServer {
 	// 서버 소켓 및 클라이언트 연결 소켓
@@ -28,10 +26,11 @@ public class PCServer {
 	// 로거 객체
 	Logger logger;
 
-	Map<String, String> current_count;
+	Map<String, String> currentCount;
 
-	public static OrdersDao o_dao;
-	public static Vector<OrdersDto> PCorder_list = new Vector<OrdersDto>();
+	public static OrdersDao _ordersDao = OrdersDao.getInstance();
+	//! This field has been depricated...
+	// public static Vector<OrdersDto> PCorder_list = new Vector<OrdersDto>();
 
 	public void start() {
 		logger = Logger.getLogger(this.getClass().getName());
@@ -144,13 +143,21 @@ public class PCServer {
 						/* 관리자가 지정한 사용자에게 메세지를 보내기 위한 메소드를 호출합니다. */
 						msgSendToCustomer(msg);
 					} else if (checkMode("orderSendServer")) {
-						/* 주문 정보를 최신화하여 좌석 정보창에 뿌려주기 위해 DB에 있는 주문 정보를 가져와 주문 정보를 메시지로 보냅니다. */
-						o_dao.ORDERS_FUNC_2();
-
+						//! This code has been depricated...
+						/*while(!_ordersDao.getOrderQueue().isEmpty()) {
+							OrdersDto ordersDto = _ordersDao.getOrderQueue().remove();
+							if(msgObject.getId().equals(ordersDto.getcNAME())) {
+								str += ordersDto.getpNAME() + " " + ordersDto.getoCNT() + "개\n";
+							}
+						}
+						*/
+						//주문 정보를 최신화하여 좌석 정보창에 뿌려주기 위해 DB에 있는 주문 정보를 가져와 주문 정보를 메시지로 보냅니다.
+						_ordersDao.ORDERS_FUNC_2();
+						
 						String str = "";
-						for (int i = 0; i < PCorder_list.size(); i++) {
-							if (msgObject.getId().equals(PCorder_list.get(i).getcNAME())) {
-								str += PCorder_list.get(i).getpNAME() + " " + PCorder_list.get(i).getoCNT() + "개\n";
+						for (int i = 0; i < _ordersDao.getOrderList().size(); i++) {
+							if (msgObject.getId().equals(_ordersDao.getOrderList().get(i).getcNAME())) {
+								str += _ordersDao.getOrderList().get(i).getpNAME() + " " + _ordersDao.getOrderList().get(i).getoCNT() + "개\n";
 							}
 						}
 						orderSendToAdmin(gson.toJson(new Message(msgObject.getSeat(), msgObject.getId(), "",
